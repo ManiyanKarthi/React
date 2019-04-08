@@ -1,0 +1,281 @@
+
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+html, body{
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+}
+
+.rootContainer{
+  width: 100%;
+  height: 100%;
+}
+
+.reactContainer{
+  width: 100%;
+  height: 100%;
+}
+
+.navigationContainer{
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  z-index: 10; 
+  transition: width 0.3s;
+}
+
+.bodyContainer{
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  transition: left 0.3s;
+}
+
+.headerContainer{
+  position: absolute;
+  display: flex;
+  top: 0px;
+  width: 100%;
+  height: 60px;
+  padding: 10px 0px;
+  background-color: #ffffffe3;
+  border-bottom: 1px solid #cccccc;
+  z-index: 6;
+}
+
+.mainContainer{
+  position: absolute;
+  top: 0px;
+  bottom: 36px;
+  width: 100%;
+  padding: 15px;
+  z-index: 4;
+  background-color: #f4f3ef;
+  overflow: auto;
+}
+
+.mainContent{
+  margin-top: 61px;
+  width: 100%;
+  height: calc(100% - 61px);
+  border-radius: 5px;
+  background: white;
+}
+
+.footerContainer{
+  position: absolute;
+  bottom: 0px;
+  height: 35px;
+  width: 100%;
+  z-index: 5;
+  text-align: center;
+  border-top: 1px solid #cccccc;
+  background-color: #f4f3ef;
+}
+
+.nopadding{
+  padding: 0px !important;
+}
+
+
+/*** Navigation properties****/
+
+.menuContainer{
+  width: 100%;
+  padding: 17px 10px 20px 10px;
+  font-family: sans-serif;
+  height: 100%;
+  overflow: auto;
+  user-select: none;
+  transition: width 0.3s;
+  background-image: linear-gradient(#5f5a55, #000000);
+}
+
+.menuHRline{
+  min-width: 20px;
+  margin: 15px 10px;
+  background-color: #cccccc;
+}
+
+.menuOption{
+  min-width: 20px;
+  display: block;
+  position: relative;
+  white-space: nowrap;
+  margin: 20px 15px;
+  color: white;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.menuOption:hover{
+  color: white;
+}
+
+.menuOptionActive{
+  color: #51bcda;
+}
+
+.menuOptionActive:hover{
+  color: #54cbec;
+}
+
+.rotate180{
+  transition: transform 0.5s;
+}
+
+.rotate180Active{
+  transform: rotate(180deg);
+}
+
+.menuOptionIcon{
+  display: inline-block;
+  padding: 1px;
+  width: 20px;
+  text-align: left;
+}
+
+.menuOptionText{
+  font-size: 17px;
+  font-weight: bold;
+  display: inline-block;
+  padding: 0px 15px;
+}
+
+.menuOptionDownArrow{
+  position: absolute;
+  display: inline-block;
+  right: 0px;
+}
+
+.menuChildrens{
+  display: none;
+  transition: height 1s;
+}
+
+.menuChildrensActive{
+  display: block;
+}
+
+.menuChild{
+  min-width: 20px;
+  display: block;
+  color: #c1c1c1e0;
+  margin: 15px;
+  white-space: nowrap;
+}
+
+.menuChild:hover{
+  color: white;
+}
+
+.menuChildActive{
+  color: #51bcda;
+}
+
+.menuChildActive:hover{
+  color: #54cbec;
+}
+
+.menuChildIconText{
+  display: inline-block;
+  font-size: 11px;
+  width: 20px;
+  text-align: right;
+}
+
+.menuChildText{
+  display: inline-block;
+  padding: 0px 17px;
+  font-size: 15px;
+}
+
+/** End Navigation properties **/
+
+.toogleButton{
+  border: none;
+  background-color: #7f7f7f;
+  color: #dadadae0;
+  border-radius: 20px;
+  padding: 5px;
+  height: 39px;
+  width: 39px;
+  outline: none !important;
+  cursor: pointer;
+}
+
+.toogleButton:hover, .toogleButton:focus{
+  background-color: #2f2f2f;
+}
+
+.headerTitle{
+  color: #5a5a5ae0;
+  font-size: 20px;
+}
+
+.rightsidebuttons{
+  border: none;
+  background-color: transparent;
+  color: #8a8a8a;
+  border-radius: 20px;
+  font-size: 20px;
+  height: 40px;
+  width: 40px;
+  outline: none !important;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.rightsidebuttons:hover{
+  color: #6ccaf1;
+  transform: rotate(20deg);
+}
+.screen-style{
+  width:100%;
+  height:100%;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px 0 ;
+}
+
+/*** Custom Scroll ***/
+.CustomeScroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.CustomeScroll::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+.CustomeScroll::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+.CustomeScroll::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+/*** End Custom Scroll ***/
+
+.control-label {
+      padding-top: 7px;
+    margin-bottom: 0;
+    text-align: right;
+
+}
+
+.customClass {
+    padding: 3px;
+}
+
+.table-bordered tbody tr td{
+   word-wrap:break-word;
+  white-space: normal;
+}
+
+
+

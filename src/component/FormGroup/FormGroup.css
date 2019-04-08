@@ -1,0 +1,27 @@
+.form-label{
+    font-size: .8571em;
+    margin-bottom: 3px;
+    color: #9a9a9a;
+}
+.form-group{
+    margin-bottom: 3px;
+}
+
+.form-group>div:last-child {
+    width: 100%;
+}
+
+input:first-child {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #66615b;
+  }
+
+  .row-style{
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+    position: absolute;
+  }
