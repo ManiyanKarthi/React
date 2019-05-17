@@ -3,17 +3,213 @@ import { Col ,Row} from 'react-bootstrap';
 import PlanningHeader from './../common/planningHeader';
 import UIFields from './../../component/uicomponent/UIFields';
 import UIFieldsGeneral from './../../component/uicomponent/UIFieldsGeneral';
-
+import {formatAMPM} from './../../component/common/common';
+import './../../css/app.css';
 import BootstrapCustomTable from './../../component/table';
-import {TableColumnMapping} from './../../component/configurationdata';
+import {TableColumnMapping,monthNames} from './../../component/configurationdata';
 import fetchApi from './../../api/Api';
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+
 var testTypes = ["Communication Testing","Table Top Testing","WAR Testing","RC Testing"];
 var gridData;
 var removeData;
 var getPreviewData;
+
+
+class MyVerticallyCenteredModal extends React.Component {
+
+    constructor(props){
+        super(props);
+       this.state= {gridData:[],primaryTester:"",secondaryTester:"",primarytestervalue:"",primaryTesterLst:[],secondaryTesterLst:[],selctedgridData:[],planstartdateValue:new Date(),planenddateValue:new Date()}
+       gridData = this.gridData.bind(this);
+       removeData =this.removeData.bind(this);
+       this.addData=this.addData.bind(this);
+
+    }
+    componentWillReceiveProps() {
+        this.setState({
+            selctedgridData:[]
+        })
+    }
+    componentWillMount() {
+             
+        fetch('/utility/getemployeedetails').then(res => res.json()).then(data =>{
+            
+            this.setState({gridData: data}); 
+                            
+        })
+
+            fetch('/utility/getemployeedetails?role=Tester').then(res => res.json()).then(data =>{
+                var objList = data.map(function(obj){
+                    var newObject ={
+                                keyvalue:obj.id,
+                                value:obj.fName+","+obj.lName
+                            };
+                        return newObject;
+                    });
+                this.setState({primaryTesterLst: objList,secondaryTesterLst: objList}); 
+                                    
+                })
+
+        }
+        
+    
+    onChangeprimaryTester = (ths)=> {
+
+        this.setState({
+                primarytestervalue:ths.currentTarget.selectedOptions[0].innerText+'('+ths.currentTarget.value+')',
+                primaryTester:ths.currentTarget.value
+            });
+    }
+
+      onChangesecondaryTester = (ths)=> {
+        this.setState({
+                secondaryTestervalue:ths.currentTarget.selectedOptions[0].innerText+'('+ths.currentTarget.value+')',
+                secondaryTester:ths.currentTarget.value
+            });
+    } 
+
+      gridData = (obj) =>{
+              let array = this.state.selctedgridData;
+          
+                 this.setState({
+                    selctedgridData:[...array,obj]
+                });
+            
+        
+    }
+
+      removeData = (obj) => {
+             let array = this.state.selctedgridData;
+            var index = array.indexOf(obj)
+       
+            if (index !== -1) {
+                array.splice(index, 1);
+            }
+             this.setState({
+                    selctedgridData:[...array]
+                });
+    }
+
+    addData = () =>{
+
+    this.props.onHide(this.state.primarytestervalue,this.state.primarytestervalue,this.state.planstartdateValue,this.state.planenddateValue,this.state.selctedgridData);
+
+    }
+
+
+  render() {
+       var uiMap2 = [{
+                    fields:[{ 
+                        field:true,
+                        label:"Primary Tester:",
+                        validateflag:false,
+                        required:false,
+                        type:"select",
+                        value:this.state.primaryTester,
+                        onChange:this.onChangeprimaryTester,
+                        selectList:this.state.primaryTesterLst
+                    },{  
+                        field:true,
+                        label:"Secondary Tester:",
+                        type:"select",
+                        validateflag:false,
+                        required:false,
+                        value:this.state.secondaryTester,
+                        onChange:this.onChangesecondaryTester,
+                        selectList:this.state.secondaryTesterLst
+                    },{ 
+                        field:true, 
+                        label:"Plan Start Time:",
+                        type:"DatePicker",
+                        validateflag:false,
+                        required:false,
+                        value:this.state.planstartdateValue,
+                        onChange: (ths)=> {
+                            this.setState({
+                                    planstartdateValue:ths
+                                });
+                        },
+                        selectList:[]
+                    } ]
+                },{
+                    fields:[{ 
+                        field:true,
+                        label:"Plan End Time:",
+                        validateflag:false,
+                        required:false,
+                        type:"DatePicker",
+                        value:this.state.planenddateValue,
+                        onChange:(ths)=> {
+                            this.setState({
+                                    planenddateValue:ths
+                                });
+                        },
+                        selectList:[]
+                    },{  
+                        field:false
+                    },{ 
+                        field:false
+                    }]
+                }];
+
+       var table = {};
+        table.data=[];
+        table.columnList = TableColumnMapping.CommCallTreewithoutContacted;
+        table.exportCSV = false;
+
+        table.insertRow = false;
+        table.deleteRow = false;
+        table.selectRow = {mode: 'checkbox',onSelect:(obj,selected)=>{
+            
+            if(selected){
+                gridData(obj);
+            } else {
+                removeData(obj);
+            }
+           
+
+        },onSelectAll:(selected,obj)=>{
+           if(selected){
+               this.setState({selctedgridData:obj});
+            } else {
+                this.setState({selctedgridData:[]});
+            }
+
+        }}
+
+    return (
+      <Modal
+        {...this.props}
+        size="lg"
+        dialogClassName="modal-90w"
+        aria-labelledby="example-custom-modal-styling-title"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="example-custom-modal-styling-title">
+            Add Communication / Call Tree Details
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <div>
+                <UIFieldsGeneral mapList={uiMap2} />
+            <div style={{"padding":"15px","display":"realtive"}}>
+                <label style={{"fontWeight":"bold"}} > Select an employee: </label>
+                <BootstrapCustomTable table={table} data={this.state.gridData} />
+            </div>
+            </div> 
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={this.addData}>Save</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+}
+
+
 class CreateTestPlan extends React.Component{
 constructor(props){
         super(props);
@@ -21,13 +217,11 @@ constructor(props){
         this.onChangeprojectvalue = this.onChangeprojectvalue.bind(this);
         this.onChangeDate = this.onChangeDate.bind(this);
         this.onChangetypeOftest = this.onChangetypeOftest.bind(this);
-        this.saveandPreviewPlan = this.saveandPreviewPlan.bind(this);
-        this.saveandPreviewPlan=this.saveandPreviewPlan.bind(this);
         gridData = this.gridData.bind(this);
         removeData =this.removeData.bind(this);
         getPreviewData = this.getPreviewData.bind(this);
         this.getplanComments=this.getplanComments.bind(this);
-       this.state= {plancomments:[],preview:false,gridData:[],selctedgridData:[],secondaryTesterLst:[],primaryTesterLst:[],typeoftest:"--Select--",planstartdateValue:new Date(),planenddateValue:new Date(),locationvalue:"--Select--",projectvalue:"--Select--",locOptionlist:[],projectOptionlist:[]}
+       this.state= {modalShow: false,plancomments:[],preview:false,gridData:[],selctedgridData:[],secondaryTesterLst:[],primaryTesterLst:[],typeoftest:"--Select--",planstartdateValue:new Date(),planenddateValue:new Date(),locationvalue:"--Select--",projectvalue:"--Select--",locOptionlist:[],projectOptionlist:[]}
 
     }
 
@@ -35,7 +229,7 @@ constructor(props){
             fetch('/utility/getprojectdetails').then(res => res.json()).then(data =>{
                 
                     this.setState({projectOptionlist:data.map(function(obj){
-                    return obj.projectName+" - "+obj.id
+                    return obj.projectName+"-"+obj.id
                 })}); 
                                     
             })
@@ -44,7 +238,7 @@ constructor(props){
                     this.setState({locOptionlist:data.map(function(obj){
                         var newObject ={
                             key:obj._id,
-                            value:obj.location+" - "+obj.id
+                            value:obj.location+"-"+obj.id
                         };
                     return newObject
                 })});                
@@ -214,20 +408,6 @@ constructor(props){
             });
     }
 
-formatAMPM = (date) => {
-      var datevalue = date.getDate();
-        var month = date.getMonth();
-        var year = date.getFullYear();
-
-        var hours = date.getHours();
-        var minutes = date.getMinutes();
-        var ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
-        minutes = minutes < 10 ? '0'+minutes : minutes;
-        var strTime = month +'/' +datevalue+'/'+year+' '+ hours + ':' + minutes + ' ' + ampm;
-  return strTime;
-}
 
 
         getcommunicationobj = (data)=> {
@@ -273,32 +453,9 @@ formatAMPM = (date) => {
             }
 
 
-    saveandPreviewPlan = (ths) => {
+    submitforApproval = (ths)=>{
 
-        var json = {
-                project:this.state.projectvalue,
-                location:this.state.locationvalue,
-                typeoftest:this.state.typeoftest,
-                planstartdateValue:this.formatAMPM(new Date(this.state.planstartdateValue)),
-                planenddateValue:this.formatAMPM(new Date(this.state.planenddateValue)),
-                primaryTester:this.state.primarytestervalue,
-                secondaryTester:this.state.secondaryTestervalue,
-                 projectDetails:this.state.projectvalue.toString().split("-")[1].trim()+'_'+this.state.locationvalue.toString().split("-")[1].trim()+'_'+monthNames[new Date(this.state.planstartdateValue).getMonth()]+'_'+new Date(this.state.planstartdateValue).getFullYear(),
-                employeeData:this.state.selctedgridData.map((ths,i)=>{
-                    return {id:ths.id,username:ths.username,primaryNumber:ths.primaryNumber};
-                })
-                ,status:"Draft"
-            }
-
-           
-
-                let fetchurl = '/testing/addtestplan';
-
-            if(json.employeeData.length>0){
-
-                fetchApi(fetchurl,JSON.stringify(json));
-            }
-          json = {
+        let json = {
                 project:this.state.projectvalue,
                 location:this.state.locationvalue,
                 inscope:this.state.inscope,
@@ -316,29 +473,55 @@ formatAMPM = (date) => {
               fetchurl = '/testing/updatetestplancomments?_id='+this.state.plancomments[0]._id;
                 fetchApi(fetchurl,JSON.stringify(json));
          }
-         
 
-            getPreviewData();
 
-    }
-
-    submitforApproval = (ths)=>{
            let fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=Draft';
                 fetchApi(fetchurl,JSON.stringify({status:'ReviewPending'}));
                getPreviewData();
     }
 
     getPreviewData = ()=>{
-        let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=Draft';
+        let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=Draft'+'&typeoftest='+this.state.typeoftest;
     
         fetch(fetchurl).then(res => res.json()).then(data =>{
                     this.setState({prviewData:data,preview:true});                                
             });
     }
 
+  handleShow=() => {
+    this.setState({ modalShow: true });
+  }
 
     render(){
 
+            let modalClose = (primaryTester,secTester,planstartDate,planEndDate,selctedgridData) => {
+                                if(primaryTester){
+                                     var json = {
+                                        project:this.state.projectvalue,
+                                        location:this.state.locationvalue,
+                                        typeoftest:this.state.typeoftest,
+                                        planstartdateValue:formatAMPM(new Date(planstartDate)),
+                                        planenddateValue:formatAMPM(new Date(planEndDate)),
+                                        primaryTester:primaryTester,
+                                        secondaryTester:secTester,
+                                        projectDetails:this.state.projectvalue.toString().split("-")[1].trim()+'_'+this.state.locationvalue.toString().split("-")[1].trim()+'_'+monthNames[new Date(this.state.planstartdateValue).getMonth()]+'_'+new Date(this.state.planstartdateValue).getFullYear(),
+                                        employeeData:selctedgridData.map((ths,i)=>{
+                                            return {id:ths.id,username:ths.username,primaryNumber:ths.primaryNumber};
+                                        })
+                                        ,status:"Draft"
+                                    }
+
+                                        let fetchurl = '/testing/addtestplan';
+
+                                        if(json.employeeData.length>0){
+
+                                            fetchApi(fetchurl,JSON.stringify(json));
+                                        }
+                                        getPreviewData();
+                                }
+                               
+                         this.setState({ modalShow: false });
+            };
 
         var table = {};
         table.data=[];
@@ -412,8 +595,6 @@ formatAMPM = (date) => {
                 })
             })
             })
-               
-
                 getPreviewData();
 
             }
@@ -501,83 +682,43 @@ formatAMPM = (date) => {
                         value:this.state.constraints,
                         onChange:this.onChangeConstraint,
                         selectList:[]
-                    },{ 
-                        field:!this.state.preview, 
-                        label:"Plan Start Time:",
-                        type:"DatePicker",
-                        validateflag:false,
-                        required:false,
-                        value:this.state.planstartdateValue,
-                        onChange:this.onChangeDate,
-                        selectList:[]
-                    } ]
-                },{
-                    fields:[{ 
-                        field:!this.state.preview,
-                        label:"Plan End Time:",
-                        validateflag:false,
-                        required:false,
-                        type:"DatePicker",
-                        value:this.state.planenddateValue,
-                        onChange:this.onChangeEndDate,
-                        selectList:[]
                     },{  
-                        field:false
-                    },{ 
-                        field:false
-                    }]
-                }];
-
-                 var uiMap2 = [{
-                    fields:[{ 
-                        field:true,
-                        label:"Primary Tester:",
-                        validateflag:false,
-                        required:false,
-                        type:"select",
-                        value:this.state.primaryTester,
-                        onChange:this.onChangeprimaryTester,
-                        selectList:this.state.primaryTesterLst
-                    },{  
-                        field:true,
-                        label:"Secondary Tester:",
-                        type:"select",
-                        validateflag:false,
-                        required:false,
-                        value:this.state.secondaryTester,
-                        onChange:this.onChangesecondaryTester,
-                        selectList:this.state.secondaryTesterLst
-                    },{ 
                         field:false
                     } ]
                 }];
-
            
 
-
-
         return (
+           
             <div className={"panel"}> 
-                <PlanningHeader  title={!this.state.preview?"Create Test Plan":"Preview Plan"} headerRight={false} /> 
+                 <MyVerticallyCenteredModal
+                    show={this.state.modalShow}
+                    onHide={modalClose}
+                    />
+                   
+                    <PlanningHeader  title={"Create Test Plan"} headerRight={false} /> 
+                   
+                    <UIFieldsGeneral mapList={uiMap} />
 
-                <UIFieldsGeneral mapList={uiMap} />
-    
+                <div class="col-md-12" style={{"textAlign":"center","paddingTop": "20px"}}>
+                    <button class="btn btn-success" onClick={this.getPreviewData} >Preview</button>
+                </div>
                 <div className={"panel"}> 
-                        <PlanningHeader  title={"Communication / Call Tree Details:"} headerRight={false} /> 
-
+                        
                         {!this.state.preview?
-                        <div>
-                            <UIFieldsGeneral mapList={uiMap2} />
-                            <div style={{"padding":"15px","display":"realtive"}}>
-                                <label style={{"fontWeight":"bold"}} > Select an employee: </label>
-                                <BootstrapCustomTable table={table} data={this.state.gridData} />
-                            </div>
-                            <div class="col-md-12" style={{"textAlign":"center"}}>
-                                <button class="btn btn-success" onClick={this.saveandPreviewPlan} >Save and Preview Plan</button>
-                            </div>
-                        </div>
+                            null
                         :
                         <div>
+                            <div class="row">
+                                <div class="col-md-3.6">
+                                        <PlanningHeader  title={"Communication / Call Tree Details:"} headerRight={false} /> 
+                                </div>
+                                <div class="col-md-6"  style={{"paddingLeft": "20px"}} >
+                                            <Button variant="primary" onClick={this.handleShow}>
+                                            Add
+                                            </Button>
+                                </div> 
+                            </div>  
                             {this.state.prviewData.map((data,i) => {
                                 var _id=data._id;
                                  return <div key={i}><UIFieldsGeneral mapList={this.getcommunicationobj(data)} />
@@ -589,8 +730,7 @@ formatAMPM = (date) => {
                                  </div></div>;   
                             }
                             )}
-                            
-                                {this.state.prviewData.length>0?<div class="col-md-12" style={{"textAlign":"center"}}>
+                            {this.state.prviewData.length>0?<div class="col-md-12" style={{"textAlign":"center"}}>
                                 <button class="btn btn-success" onClick={this.submitforApproval} >Submit for Approval</button>
                             </div>:<div style={{"textAlign":"center"}} ><span>No Data to Display</span></div>}
                         </div>

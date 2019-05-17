@@ -132,6 +132,10 @@ router.get('/getTestPlanning', (req, res,next) => {
   mongodb.getDatafromDb(req,res,"TESTPLANNING",{location:req.query.location,project:req.query.project});
 })
 
+router.get('/fetchAllData', (req, res,next) => {
+  res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+  mongodb.getDatafromDb(req,res,req.query.type,{});
+})
 
 
 
@@ -424,11 +428,13 @@ router.post('/deleteTestPlanning',jsonParser, (req, res,next) => {
 
 router.post('/plansubmit',jsonParser, (req, res,next) => {
   var status ="Draft";
-  if(req.query.status=="Draft"){
-    status="Active";
-  } else if(req.query.status=="Active"){
-    status="Approved";
-  }
+  if(req.query.status=="Draft" || req.query.status=="Waiting for Rework"){
+    status="Review Pending";
+  } else if(req.query.status=="Review Pending" && req.query.sendcomments!=null && req.query.sendcomments=="true"){
+    status="Waiting for Rework";
+  } else if(req.query.status=="Review Pending") {
+    status = "Approved";
+  } 
   
   mongodb.updatestatusQuery("BUSINESSIMPACT",{location:req.query.location,project:req.query.project,STATUS:req.query.status},{ $set: {STATUS:status} });
   mongodb.updatestatusQuery("RISKASSESSMENT",{location:req.query.location,project:req.query.project,STATUS:req.query.status},{ $set: {STATUS:status} });

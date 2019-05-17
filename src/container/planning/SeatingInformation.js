@@ -50,6 +50,23 @@ fetchData = ()=> {
        })
     }
 
+componentWillReceiveProps(){
+         if(this.props.fetchdata!=null && this.props.fetchdata) {
+               if((localStorage.getItem("locationvalue")!=null) && (localStorage.getItem("locationvalue")!="")){
+                this.setState({
+                    showResults:true
+                })
+            }
+                this.fetchData();
+        }
+          if(this.props.changestate!=null && this.props.changestate && !(this.state.changestate)) {
+            fetchData();
+           this.setState({
+               changestate:true
+           });
+        }
+        
+    }
 
     render(){
       
@@ -63,12 +80,29 @@ fetchData = ()=> {
         if(this.props.headerRight!=null) {
             headerRight = this.props.headerRight;
         }
-        if(this.props.changestate!=null && this.props.changestate && !(this.state.changestate)) {
-            fetchData();
-           this.setState({
-               changestate:true
-           });
+       if(this.props.deleteflag!=null) {
+            table.deleteRow = this.props.deleteflag;
         }
+
+        table.columnList[table.columnList.length-1].hidden=true;
+        table.columnList[table.columnList.length-1].editable=false;
+        table.columnList[table.columnList.length-2].hidden=true;
+        table.columnList[table.columnList.length-2].editable=false;
+
+         if(this.props.status!=null) {
+                if(this.props.status=="Waiting for Rework") {
+                    table.columnList[table.columnList.length-1].hidden=false;
+                    table.columnList[table.columnList.length-1].editable={type:'textarea'};
+                     table.columnList[table.columnList.length-2].hidden=false;
+                    table.columnList[table.columnList.length-2].editable=false;
+                } else if(this.props.status=="Review Pending") {
+                    table.columnList[table.columnList.length-1].hidden=false;
+                    table.columnList[table.columnList.length-1].editable=false;
+                     table.columnList[table.columnList.length-2].hidden=false;
+                    table.columnList[table.columnList.length-2].editable={type:'textarea'};
+                } 
+        }
+        
         table.options = {
             exportCSVText: 'Export SeatingInformation',
             deleteText: 'Delete SeatingInformation',
@@ -129,7 +163,7 @@ fetchData = ()=> {
             <div style={{"display":"realtive"}}>
                     {this.state.showResults? <PlanningHeader  title={"Seating Information"} headerRight={headerRight} /> : null}
                     <div style={{"padding":"15px"}}>
-                        {this.state.showResults ? <BootstrapCustomTable table={table} data={this.state.data} /> : <Projectlocation  onSubmit={this.onSubmit} /> }
+                        {this.state.showResults ? <BootstrapCustomTable table={table} data={this.state.data} /> : this.props.fetchdata!=null && this.props.fetchdata ?null:<Projectlocation  onSubmit={this.onSubmit} /> }
                     </div>
             </div>
         )

@@ -34,6 +34,9 @@ class BootstrapCustomTable extends React.Component{
 
     
 
+
+    
+
     render(){
         
         var headerList = [];
@@ -41,19 +44,19 @@ class BootstrapCustomTable extends React.Component{
         headerList = this.state.table.columnList.map((element, i) => {
 
             if(element.dataFormat){
-            return <TableHeaderColumn key={i} isKey={element.isKey===true?true:false}  thStyle={{ whiteSpace: 'normal',"wordWrap":"break-word"}}  
+            return <TableHeaderColumn key={i} isKey={element.isKey===true?true:false}   
                     hidden={element.hidden===true?true:false}
                     dataSort={element.isKey===true?true:false}
                     dataField={element.dataField}
-                    editable={element.editable} dataFormat={element.dataFormatClick} >
+                    editable={element.editable} dataFormat={element.dataFormatClick} autoValue={element.autoValue}  dataSort>
                 {element.dataTitle}
             </TableHeaderColumn>
             } else {
-                 return <TableHeaderColumn key={i} isKey={element.isKey===true?true:false}  thStyle={{ whiteSpace: 'normal',"wordWrap":"break-word"}}  
+                 return <TableHeaderColumn key={i} isKey={element.isKey===true?true:false} 
                     hidden={element.hidden===true?true:false}
                     dataSort={element.isKey===true?true:false}
                     dataField={element.dataField}
-                    editable={element.editable}  >
+                    editable={element.editable} autoValue={element.autoValue} dataSort={ true }  >
                 {element.dataTitle}
             </TableHeaderColumn>
             }
@@ -62,7 +65,7 @@ class BootstrapCustomTable extends React.Component{
 
 
         return (
-            <BootstrapTable striped scrollX data={this.props.data} 
+            <BootstrapTable  data={this.props.data} 
                         options={this.state.table.options}
                         insertRow={this.state.table.insertRow}
                         deleteRow={this.state.table.deleteRow}

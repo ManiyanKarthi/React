@@ -11,7 +11,7 @@ const URLmapping = {
 			"text": "Search",
 			"icon": "search",
 			"href": "#/search",
-			"severity": ["Admin", "Manager", "Editor", "Tester", "User"],
+			"severity": ["Admin", "Manager"],
 			"mapping": []
 		},
 		{
@@ -46,6 +46,30 @@ const URLmapping = {
 			"href": "",
 			"severity": ["Admin", "Manager", "Editor"],
 			"mapping": [
+				{
+					"text": "Create BC Plan",
+					"icontext": "CP",
+					"href": "#/planning/createplan",
+					"severity": ["Admin", "Editor"]
+				},
+				{
+					"text": "Review BC Plan",
+					"icontext": "RE",
+					"href": "#/planning/planreview",
+					"severity": ["Admin", "Manager"]
+				},
+				{
+					"text": "Modify BC Plan",
+					"icontext": "RP",
+					"href": "#/planning/planreviewpending",
+					"severity": ["Admin", "Editor"]
+				},
+				{
+					"text": "View BC Plan",
+					"icontext": "VP",
+					"href": "#/planning/viewplan",
+					"severity": ["Admin", "Manager"]
+				}/*,
 				{
 					"text": "Business Impact",
 					"icontext": "BI",
@@ -111,13 +135,7 @@ const URLmapping = {
 					"icontext": "SU",
 					"href": "#/planning/plansubmit",
 					"severity": ["Admin", "Editor"]
-				},
-				{
-					"text": "Review",
-					"icontext": "RE",
-					"href": "#/planning/planreview",
-					"severity": ["Admin", "Manager"]
-				}
+				}*/
 			]
 		},
 		{
@@ -133,13 +151,13 @@ const URLmapping = {
 					"severity": ["Admin", "Tester"]
 				},
 				{
-					"text": "Review Plan",
+					"text": "Review Test Plan",
 					"icontext": "RP",
 					"href": "#/testing/reviewtestplan",
 					"severity": ["Admin", "Manager"]
 				},
 				{
-					"text": "View Plan",
+					"text": "View Test Plan",
 					"icontext": "VP",
 					"href": "#/testing/viewapprovedplan",
 					"severity": ["Admin", "Manager"]
@@ -228,53 +246,58 @@ const URLmapping = {
 
 const TableColumnMapping = {
 	"EmployeeTable": [{"dataTitle":"id", "dataField":"id", "isKey":true},{"dataTitle":"First Name", "dataField":"fName"}, {"dataTitle":"Last Name", "dataField":"lName"}, 
-		{"dataTitle":"PrimaryNumber", "dataField":"primaryNumber"}, {"dataTitle":"Secondary Number", "dataField":"secondaryNumber"}, 
-		{"dataTitle":"Role", "dataField":"role"}, {"dataTitle":"Address", "dataField":"address"}],
+		,{"dataTitle":"Password", "dataField":"password"},{"dataTitle":"PrimaryNumber", "dataField":"primaryNumber"}, {"dataTitle":"Secondary Number", "dataField":"secondaryNumber"}, 
+		{"dataTitle":"Role", "dataField":"role",editable:{type: 'select', options: { values: ['Admin','Tester','Manager','Editor']}}}, {"dataTitle":"Address", "dataField":"address"}],
 	"LocationTable": [{"dataTitle":"Country", "dataField":"country"}, {"dataTitle":"Location", "dataField":"location",required:true},{"dataTitle":"Location Code", "dataField":"id", "isKey":true} 
 		],	
 	"ProjectTable": [{"dataTitle":"Project Name", "dataField":"projectName"}, {"dataTitle":"Project Code", "dataField":"id","isKey":true}, 
 		{"dataTitle":"Project Description", "dataField":"projectDesc"}],	
-	"BussinessImpact": [{"dataTitle":"id", "dataField":"id","isKey":true,hidden:true},{"dataTitle":"Time", "dataField":"TIMEFRAME"}, {"dataTitle":"Service / Project","dataField":"PROJECT"},{"dataTitle":"Tasks", "dataField":"TASK"}, {"dataTitle":"Business / Financial Impact", "dataField":"BUSINESSIMPACT"}, {"dataTitle":"Comments", "dataField":"COMMENTS"},{"dataTitle":"Status", "dataField":"STATUS",editable:false}],
+	"BussinessImpact": [{"dataTitle":"id", "dataField":"id","isKey":true,autoValue:true,hidden:true},{"dataTitle":"Time", "dataField":"TIMEFRAME"}, {"dataTitle":"Service / Project","dataField":"PROJECT"},{"dataTitle":"Tasks", "dataField":"TASK",editable:{ type:'textarea'}}, {"dataTitle":"Business / Financial Impact", "dataField":"BUSINESSIMPACT",editable:{ type:'textarea'}}, {"dataTitle":"Comments", "dataField":"COMMENTS",editable:{ type:'textarea'}},{"dataTitle":"Reviewer Comments", "dataField":"REVIEWERCOMMENTS",editable:false,hidden:true},{"dataTitle":"Author Comments", "dataField":"AUTHORCOMMENTS",editable:false,hidden:true}],
 		 
-	 "RiskAssessment": [{"dataTitle":"Risk Id", "dataField":"id","isKey":true}, {"dataTitle":"Vulnerable Enabler", "dataField":"VULNERABLE"}, {"dataTitle":"Risk Description", "dataField":"RISKDESC"}, {"dataTitle":"Likelihood", "dataField":"LIKELIHOOD"}, 
-		 {"dataTitle":"Impact Description", "dataField":"IMPACTDESC"}, {"dataTitle":"Impact Rating", "dataField":"IMPACTRATING"}, {"dataTitle":"Risk Level", "dataField":"RISKLEVEL"}, {"dataTitle":"Risk Mitigation", "dataField":"RISKMITIGATION"}, 
-		 {"dataTitle":"Risk Contingency", "dataField":"RISKCONTINGENCY"}, {"dataTitle":"Owner", "dataField":"RESPONSIBLEOWNER"},{"dataTitle":"Status", "dataField":"STATUS",editable:false}],
+	 "RiskAssessment": [{"dataTitle":"Risk Id", "dataField":"id","isKey":true}, {"dataTitle":"Vulnerable Enabler", "dataField":"VULNERABLE"}, {"dataTitle":"Risk Description", "dataField":"RISKDESC",editable:{ type:'textarea'}}, {"dataTitle":"Likelihood", "dataField":"LIKELIHOOD"}, 
+		 {"dataTitle":"Impact Description", "dataField":"IMPACTDESC",editable:{ type:'textarea'}}, {"dataTitle":"Impact Rating", "dataField":"IMPACTRATING"}, {"dataTitle":"Risk Level", "dataField":"RISKLEVEL"}, {"dataTitle":"Risk Mitigation", "dataField":"RISKMITIGATION",editable:{ type:'textarea'}}, 
+		 {"dataTitle":"Risk Contingency", "dataField":"RISKCONTINGENCY",editable:{ type:'textarea'}}, {"dataTitle":"Owner", "dataField":"RESPONSIBLEOWNER"},{"dataTitle":"Reviewer Comments", "dataField":"REVIEWERCOMMENTS",editable:false,hidden:true},{"dataTitle":"Author Comments", "dataField":"AUTHORCOMMENTS",editable:false,hidden:true}],
 		 
-	 "RecoveryObjectives": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true},{"dataTitle":"Service / Project/ Process","dataField":"PROJECT"},{"dataTitle": "SLA", "dataField":"SLA"}, {"dataTitle": "Recovery Time Objectives", "dataField":"RECOVERYTIME"}, {"dataTitle": "Recovery Point Objectives", "dataField":"RECOVERYPOINT"}, 
-		 {"dataTitle": "Maximum Tolerable Period of Disruption", "dataField":"TOLERABLE"}, {"dataTitle": "Number of total Resources", "dataField":"TOTRESOURCES"}, {"dataTitle": "Number of Critical Resources", "dataField":"CRIRESOURCES"}, 
-		 {"dataTitle": "Working Window (IST)", "dataField":"WORKWINDOW"}, {"dataTitle": "Can Working Window Be Extended", "dataField":"EXTWINDOW"}, {"dataTitle": "Window Be Extended By How Much?", "dataField":"EXTWORKWINDOW"}, 
-		 {"dataTitle": "Can any security conditions be relaxed?", "dataField":"SEQURITY"}, {"dataTitle": "Can any quality conditions be relaxed?", "dataField":"QUALITY"},{"dataTitle":"Status", "dataField":"STATUS",editable:false}],
+	 "RecoveryObjectives": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true,autoValue:true},{"dataTitle":"Service / Project/ Process","dataField":"PROJECT"},{"dataTitle": "SLA", "dataField":"SLA"}, {"dataTitle": "Recovery Time Objectives", "dataField":"RECOVERYTIME"}, {"dataTitle": "Recovery Point Objectives", "dataField":"RECOVERYPOINT",editable:{ type:'textarea'}}, 
+		 {"dataTitle": "Maximum Tolerable Period of Disruption", "dataField":"TOLERABLE",editable:{ type:'textarea'}}, {"dataTitle": "No. of total Resources", "dataField":"TOTRESOURCES"}, {"dataTitle": "No. of Critical Resources", "dataField":"CRIRESOURCES"}, 
+		 {"dataTitle": "Working Window (IST)", "dataField":"WORKWINDOW",editable:{ type:'textarea'}}, {"dataTitle": "Can Working Window Be Extended", "dataField":"EXTWINDOW"}, {"dataTitle": "Window Be Extended By How Much?", "dataField":"EXTWORKWINDOW"}, 
+		 {"dataTitle": "Can any security conditions be relaxed?", "dataField":"SEQURITY"}, {"dataTitle": "Can any quality conditions be relaxed?", "dataField":"QUALITY"},{"dataTitle":"Reviewer Comments", "dataField":"REVIEWERCOMMENTS",editable:false,hidden:true},{"dataTitle":"Author Comments", "dataField":"AUTHORCOMMENTS",editable:false,hidden:true}],
 		 
-	 "AwayTeam": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true},{"dataTitle":"Service / Project","dataField":"PROJECT"},{"dataTitle":"Experts", "dataField":"EXPERTSCOUNT"}, {"dataTitle":"Skill Sets", "dataField":"EXPERTSKILLSET"}, {"dataTitle":"Others", "dataField":"OTHERS"}, 
-		 {"dataTitle":"Others Skill Set", "dataField":"SKILLSET"},{"dataTitle":"Status", "dataField":"STATUS",editable:false}],
+	 "AwayTeam": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true,autoValue:true},{"dataTitle":"Service / Project","dataField":"PROJECT"},{"dataTitle":"Experts", "dataField":"EXPERTSCOUNT"}, {"dataTitle":"Skill Sets", "dataField":"EXPERTSKILLSET",editable:{ type:'textarea'}}, {"dataTitle":"Others", "dataField":"OTHERS"}, 
+		 {"dataTitle":"Others Skill Set", "dataField":"SKILLSET",editable:{ type:'textarea'}},{"dataTitle":"Reviewer Comments", "dataField":"REVIEWERCOMMENTS",editable:false,hidden:true},{"dataTitle":"Author Comments", "dataField":"AUTHORCOMMENTS",editable:false,hidden:true}],
 		 
-	 "SeatingInformation": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true},{"dataTitle":"Seating Arrangement", "dataField":"COMMENTS"},{"dataTitle":"Status", "dataField":"STATUS",editable:false}],
+	 "SeatingInformation": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true,autoValue:true},{"dataTitle":"Seating Arrangement", "dataField":"COMMENTS",editable:{ type:'textarea'}},{"dataTitle":"Reviewer Comments", "dataField":"REVIEWERCOMMENTS",editable:false,hidden:true},{"dataTitle":"Author Comments", "dataField":"AUTHORCOMMENTS",editable:false,hidden:true}],
 		 
-	 "CommunicationPlan": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true},{"dataTitle":"Rating", "dataField":"RATING"}, {"dataTitle":"Impact", "dataField":"IMPACT"}, {"dataTitle":"Response", "dataField":"RESPONSE"}, {"dataTitle":"Escalation", "dataField":"ESCALATION"},{"dataTitle":"Status", "dataField":"STATUS",editable:false}],
+	 "CommunicationPlan": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true,autoValue:true},{"dataTitle":"Rating", "dataField":"RATING"}, {"dataTitle":"Impact", "dataField":"IMPACT",editable:{ type:'textarea'}}, {"dataTitle":"Response", "dataField":"RESPONSE",editable:{ type:'textarea'}}, {"dataTitle":"Escalation", "dataField":"ESCALATION",editable:{ type:'textarea'}},{"dataTitle":"Reviewer Comments", "dataField":"REVIEWERCOMMENTS",editable:false,hidden:true},{"dataTitle":"Author Comments", "dataField":"AUTHORCOMMENTS",editable:false,hidden:true}],
 		 
-	 "CommunicationsTree": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true},{"dataTitle":"Authority", "dataField":"TREEMODE"}, {"dataTitle":"Tree Owner", "dataField":"TREEOWNER"}, {"dataTitle":"Family Name", "dataField":"FAMILYNAME"}, {"dataTitle":"First Name", "dataField":"FIRSTNAME"}, 
+	 "CommunicationsTree": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true,autoValue:true},{"dataTitle":"Authority", "dataField":"TREEMODE"}, {"dataTitle":"Tree Owner", "dataField":"TREEOWNER"}, {"dataTitle":"Family Name", "dataField":"FAMILYNAME"}, {"dataTitle":"First Name", "dataField":"FIRSTNAME"}, 
 		 {"dataTitle":"Known As", "dataField":"NICKNAME"}, {"dataTitle":"Role", "dataField":"ROLES"}, {"dataTitle":"Deputy", "dataField":"DEPUTY"}, {"dataTitle":"Cascade From", "dataField":"CASCADEFROM"}, 
 		 {"dataTitle":"Available", "dataField":"AVAILABLE"}, {"dataTitle":"Home No", "dataField":"HOMENUMBER"}, {"dataTitle":"Mobile No", "dataField":"MOBILENUMBER"}, {"dataTitle":"Office No", "dataField":"OFFICENUMBER"}, 
-		 {"dataTitle":"Recidence Address", "dataField":"RESIDENCE"}, {"dataTitle":"Town", "dataField":"TOWN"},{"dataTitle":"Status", "dataField":"STATUS",editable:false}],
+		 {"dataTitle":"Recidence Address", "dataField":"RESIDENCE",editable:{ type:'textarea'}}, {"dataTitle":"Town", "dataField":"TOWN"},{"dataTitle":"Reviewer Comments", "dataField":"REVIEWERCOMMENTS",editable:false,hidden:true},{"dataTitle":"Author Comments", "dataField":"AUTHORCOMMENTS",editable:false,hidden:true}],
 		 
-	 "HardWareSpecifications": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true},{"dataTitle":"Status", "dataField":"STATUS",editable:false},{"dataTitle":"Type", "dataField":"CONFIGURATIONTYPE"}, {"dataTitle":"Responsibility", "dataField":"RESPONSIBILITY"}, {"dataTitle":"Details", "dataField":"DETAILS"}],
+	 "HardWareSpecifications": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true,autoValue:true},{"dataTitle":"Type", "dataField":"CONFIGURATIONTYPE"}, {"dataTitle":"Responsibility", "dataField":"RESPONSIBILITY"}, {"dataTitle":"Details", "dataField":"DETAILS",editable:{ type:'textarea'}},{"dataTitle":"Reviewer Comments", "dataField":"REVIEWERCOMMENTS",editable:false,hidden:true},{"dataTitle":"Author Comments", "dataField":"AUTHORCOMMENTS",editable:false,hidden:true}],
 		 
-	 "SoftwareSpecifications": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true},{"dataTitle":"Status", "dataField":"STATUS",editable:false},{"dataTitle":"Type", "dataField":"CONFIGURATIONTYPE"}, {"dataTitle":"Responsibility", "dataField":"RESPONSIBILITY"}, {"dataTitle":"Details", "dataField":"DETAILS"}],
+	 "SoftwareSpecifications": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true,autoValue:true},{"dataTitle":"Type", "dataField":"CONFIGURATIONTYPE"}, {"dataTitle":"Responsibility", "dataField":"RESPONSIBILITY"}, {"dataTitle":"Details", "dataField":"DETAILS",editable:{ type:'textarea'}},{"dataTitle":"Reviewer Comments", "dataField":"REVIEWERCOMMENTS",editable:false,hidden:true},{"dataTitle":"Author Comments", "dataField":"AUTHORCOMMENTS",editable:false,hidden:true}],
 		 
-	 "TestPlanning": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true},{"dataTitle":"Type of Test", "dataField":"TESTTYPE"}, {"dataTitle":"Frequency", "dataField":"FREQUENCY"}, {"dataTitle":"Details of Test", "dataField":"DETAILS"}, {"dataTitle":"Remarks", "dataField":"REMARKS"},{"dataTitle":"Status", "dataField":"STATUS",editable:false}],
+	 "TestPlanning": [{"dataTitle":"id", "dataField":"id","hidden":true,"editable":true,"isKey":true,autoValue:true},{"dataTitle":"Type of Test", "dataField":"TESTTYPE"}, {"dataTitle":"Frequency", "dataField":"FREQUENCY"}, {"dataTitle":"Details of Test", "dataField":"DETAILS",editable:{ type:'textarea'}}, {"dataTitle":"Remarks", "dataField":"REMARKS",editable:{ type:'textarea'}},{"dataTitle":"Reviewer Comments", "dataField":"REVIEWERCOMMENTS",editable:false,hidden:true},{"dataTitle":"Author Comments", "dataField":"AUTHORCOMMENTS",editable:false,hidden:true}],
 	 
 	 "PreviewPlanningTest" : [{"dataField": "empId","dataTitle" : "Emp Id"},{"dataField": "empName","dataTitle" : "Emp Name"},{"dataField": "empContNo","dataTitle" : "Emp Contact no"}],
 	 "CreateTestReport" : [{"dataField": "empId","dataTitle" : "Emp Id"},{"dataField": "empName","dataTitle" : "Emp Name"},{"dataField": "empContNo","dataTitle" : "Emp Contact no"},{"dataField": "ATTEMPT_COUNT","dataTitle" : "No. of Attempts"}],
 	 "ViewTestingReport" : [{"dataField": "empId","dataTitle" : "Emp Id"},{"dataField": "empName","dataTitle" : "Emp Name"},{"dataField": "empContNo","dataTitle" : "Emp Contact no"},{"dataField": "ContactedYesorNo","dataTitle" : "Contacted Y/N"},{"dataField": "ATTEMPT_COUNT","dataTitle" : "No. of Attempts"}],
-	"CommunicationCallTreeDetails": [{"dataTitle":"id", "dataField":"id","editable":true,"isKey":true},{"dataTitle":"Employee Name", "dataField":"username",editable:false}, {"dataTitle":"Mobile Number", "dataField":"primaryNumber",editable:false}],
+	"CommunicationCallTreeDetails": [{"dataTitle":"id", "dataField":"id","editable":true,"isKey":true,autoValue:true},{"dataTitle":"Employee Name", "dataField":"username",editable:false}, {"dataTitle":"Mobile Number", "dataField":"primaryNumber",editable:false}, {"dataTitle":"No Of Attempts", "dataField":"NoOfAttempts","editable":true,hidden:true}, {"dataTitle":"Contacted Y/N", "dataField":"NoOfAttempts","editable":false,hidden:true,dataFormat:true}],
+	"CommCallTreewithoutContacted": [{"dataTitle":"id", "dataField":"id","editable":true,"isKey":true,autoValue:true},{"dataTitle":"Employee Name", "dataField":"username",editable:false}, {"dataTitle":"Mobile Number", "dataField":"primaryNumber",editable:false}],
+	"ViewBCPlan": [{"dataTitle":"Project", "dataField":"project",dataFormat:true},{"dataTitle":"Location", "dataField":"location"},{"dataTitle":"Status", "dataField":"STATUS"}],
 }
 
 const TableReferenceMapping = {
 	"BusinessimpactTime":["0-4 hrs","4-8 hrs","8-12 hrs"]
 }
-
+const monthNames = ["","January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+]
 const GridColumnMapping = {
-	"ReviewTestPlan":[{"dataTitle":"Project Details", "dataField":"projectDetails",dataFormat:true},{"dataTitle":"Test Plan Status", "dataField":"status"}, {"dataTitle":"Test Plan Date", "dataField":"testPlanDate"}]
+	"ReviewTestPlan":[{"dataTitle":"Project Details", "dataField":"projectDetails",dataFormat:true},{"dataTitle":"Test Plan Status", "dataField":"status",dataFormat:true}, {"dataTitle":"Test Plan Date", "dataField":"testPlanDate"}]
+	,"SearchTestPlanReport":[{"dataTitle":"Project Details", "dataField":"projectDetails",dataFormat:true},{"dataTitle":"Test Plan Status", "dataField":"status",dataFormat:true}, {"dataTitle":"Test Plan Date", "dataField":"testPlanDate"}, {"dataTitle":"Test Report Status", "dataField":"reportstatus"}]
 }
 
 
@@ -282,5 +305,6 @@ export {
 	TableColumnMapping,
 	URLmapping,
 	TableReferenceMapping,
-	GridColumnMapping
+	GridColumnMapping,
+	monthNames
 }

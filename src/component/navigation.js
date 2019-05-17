@@ -11,10 +11,15 @@ class URLSubtab extends React.Component{
     constructor(props){
         super(props);
         this.state = {menubarstyle: props.menubarstyle, menuhover: props.menuhover, showsubmap:props.showsubmap ,currentoption: props.currentoption};
+        this.handleClick=this.handleClick;
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({ menubarstyle: nextProps.menubarstyle, menuhover: nextProps.menuhover, showsubmap: nextProps.showsubmap, currentoption: nextProps.currentoption});
+    }
+
+    handleClick = (obj) => {
+     
     }
 
     render(){
@@ -29,13 +34,13 @@ class URLSubtab extends React.Component{
         if(this.state.menubarstyle === "close" && this.state.menuhover === "out"){
             styleObj = { "display":"none" };
         }
-
+        var _this = this;
         submaplist = this.props.submapping.map(function(submap, i){
             var activeClass = "";
             if(currentoption === submap.id){
                 activeClass = "menuChildActive";
             }
-            return <a key={i} className={"menuChild " + activeClass} href={submap.href}>
+            return <a key={i} className={"menuChild " + activeClass} href={submap.href} onClick={_this.handleClick} >
                 <div className={"menuChildIconText"}>
                     {submap.icontext}
                 </div>
@@ -153,7 +158,7 @@ class URLHeaderList extends React.Component{
             }
             for(var j=0;j<mapping.mapping.length;j++){
                 var submap = mapping.mapping[j];
-                if(submap.href === hash){
+                if(submap.href === hash.split("?")[0]){
                     return submap.id;
                 }
             }
@@ -206,22 +211,46 @@ class URLHeaderList extends React.Component{
 class NavigationContainer extends React.Component{
     constructor(props){
         super(props);
-        var mapping = this.dynamicIdAllocate(URLmapping.mapping);
+
+        this.state = {sidemenuwidth: props.sidemenuwidth,urlmapping: []};
         
-        this.state = { urlmapping: mapping, sidemenuwidth: props.sidemenuwidth };
     }
 
-    dynamicIdAllocate(mapping){
+    componentWillMount() {
+        
+        var mapping = this.dynamicIdAllocate(URLmapping.mapping);
+        
+
+            this.setState({
+                urlmapping: mapping
+            });
+    }
+    dynamicIdAllocate(mapping1){
+        var obj = JSON.parse(localStorage.getItem('user'));
+    
+        var severity="User";
+        if(obj.length>0){
+            severity = obj[0].role
+        } 
         var mapoptionid = 1;
-        for(var i in mapping){
-            mapping[i].id = mapoptionid;
-            mapoptionid++;
-            for(var j in mapping[i].mapping){
-                mapping[i].mapping[j].id = mapoptionid;
+        var newmapping = mapping1;
+
+         newmapping = newmapping.filter(str => {
+            return (str.severity.indexOf(severity)>-1);
+        });
+
+        newmapping.map((mao) => {
                 mapoptionid++;
-            }
-        }
-        return mapping;
+                mao.id = mapoptionid;
+                mao.mapping=  mao.mapping.filter(str => {
+                    str.id=mapoptionid;
+                    mapoptionid++;
+                return (str.severity.indexOf(severity)>-1);
+                });
+            return mao;
+        });
+    
+        return newmapping;
     }
 
     render(){

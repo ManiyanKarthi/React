@@ -3,6 +3,7 @@ import UISelect from './UISelect'
 import UITextArea from './UITextArea'
 import UIDatePicker from './UIDatePicker';
 import UILabel from './UILabel'
+import UIText from './UIText'
 
 class UIFields extends React.Component {
 
@@ -16,6 +17,8 @@ class UIFields extends React.Component {
             return <UITextArea validateflag={validateflag} value={value}   onChange={onChange}  />;
              case 'DatePicker':
             return <UIDatePicker validateflag={validateflag} value={value}   onChange={onChange}  />;
+             case 'text':
+            return <UIText validateflag={validateflag} value={value}   onChange={onChange}  />;
             default:
             return <UILabel value={value}   onChange={onChange}  />;
         }

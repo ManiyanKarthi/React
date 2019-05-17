@@ -31,7 +31,6 @@ constructor(props) {
         var table = {};
 
         table.columnList = TableColumnMapping.EmployeeTable;
-        table.columnList[5].editable =  {type: 'select', options: { values: ['Admin','Tester']}} ;
         table.options = {
             exportCSVText: 'Export Employees',
             deleteText: 'Delete Employee',
@@ -45,7 +44,7 @@ constructor(props) {
 
 
             },afterInsertRow: function(obj) {
-
+                    obj.username=obj.fName + " "+obj.lName
                   fetchurl='/utility/addemployee';
                 fetch(fetchurl, {
                     method: 'POST',
