@@ -56,7 +56,6 @@ html, body{
   padding: 15px;
   z-index: 4;
   background-color: #f4f3ef;
-  overflow: auto;
 }
 
 .mainContent{
@@ -65,6 +64,8 @@ html, body{
   height: calc(100% - 61px);
   border-radius: 5px;
   background: white;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .footerContainer{
@@ -272,10 +273,72 @@ html, body{
     padding: 3px;
 }
 
-.table-bordered tbody tr td{
-   word-wrap:break-word;
-  white-space: normal;
+/*
+.react-bs-table table td, .react-bs-table table th {
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    white-space: nowrap;
+     text-overflow: initial !important;
+    overflow-x: auto !important;
+}
+
+*/
+
+.table-bordered td, .table-bordered th {
+    width: 250px !important; 
+    white-space: normal !important;
+    word-wrap:break-word;
+}
+.react-bs-container-body{
+  overflow: auto !important;
+}
+    
+
+.react-bs-container-body::-webkit-scrollbar {
+    width: 100px;
 }
 
 
+.react-bs-container-body::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+.react-bs-container-body::-webkit-scrollbar-thumb {
+  background: #888; 
+}
 
+.react-bs-container-body::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+
+.leftalign{
+  padding-left:10px;
+}
+
+.topAlign {
+  padding-top:10px;
+}
+
+.formContainer{
+      margin-top: 100px;
+    border: 1px solid rgba(217, 220, 224, 1);
+    border-radius: 6px;
+    padding: 70px 60px;
+}
+
+.submitButton {
+    width: 100%;
+    font-size: 21px;
+    padding: 12px;
+    background-color: white;
+    border: 2px solid #cf022b;
+    outline: none;
+    border-radius: 6px;
+    transition: 0.5s;
+}
+
+
+.modal-90w {
+max-width:95% !important
+}

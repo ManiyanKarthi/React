@@ -20,9 +20,7 @@ class PlanReview extends React.Component{
 constructor(props) {
     super(props);
      var showResults=false;
-    if((localStorage.getItem("locationvalue")!=null) && (localStorage.getItem("locationvalue")!="")){
-        showResults=true;
-    }
+    
     this.state = {showResults:showResults};
     this.onSubmit = this.onSubmit.bind(this);
      this.onApproveBcpm = this.onApproveBcpm.bind(this);
@@ -36,27 +34,52 @@ constructor(props) {
     }
 
  onApproveBcpm = () => {
-            fetchApi('/planning/plansubmit?location='+localStorage.getItem("locationvalue")+'&project='+localStorage.getItem("projectvalue")+'&status=Active');
-
+            fetchApi('/planning/plansubmit?location='+localStorage.getItem("locationvalue")+'&project='+localStorage.getItem("projectvalue")+'&status=Review Pending');
+            alert("Plan Approved")
+            this.setState({showResults:false})
 }
+
+
+  sendComments= () => {
+        fetchApi('/planning/plansubmit?location='+localStorage.getItem("locationvalue")+'&project='+localStorage.getItem("projectvalue")+'&status=Review Pending&sendcomments=true');
+            alert("Plan sent for Review")
+            this.setState({showResults:false})
+  }
+
+   componentWillMount() {
+       if(this.props.location.search!=null){
+            var url1 =  this.props.location.search;
+            if(url1!=""){
+                var objlst = url1.split("?")[1].split("&");
+                var locationvalue = objlst[1].split("=")[1];
+                var projectvalue = objlst[0].split("=")[1]
+                localStorage.setItem("locationvalue",locationvalue.replace(/%20/g, " "));
+                 localStorage.setItem("projectvalue",projectvalue.replace(/%20/g, " "));
+                 this.setState({showResults:true}); 
+            }
+        }
+
+
+    }
 
     render(){
         
             return (
                  <div style={{"display":"realtive","paddingBottom":"100px"}}>
-                   <PlanningHeader  title={"Submit"} />
+                   <PlanningHeader  title={"Review Plan"} headerRight={this.state.showResults?true:false} />
                      {this.state.showResults ?<div style={{"padding":"15px"}}>
-                          <BusinessImpact addflag={false}  headerRight={false} status={"Active"} />
-                        <AwayTeam addflag={false} headerRight={false}  status={"Active"} />
-                        <CommunicationPlan addflag={false} headerRight={false}   status={"Active"} />
-                        <CommunicationsTree  addflag={false} headerRight={false}  status={"Active"} />
-                        <HardWareSpecifications  addflag={false} headerRight={false} status={"Active"} />
-                        <RecoveryObjectives addflag={false} headerRight={false} status={"Active"} />
-                        <SoftwareSpecifications addflag={false} headerRight={false}  status={"Active"} />
-                        <RiskAssessment addflag={false} headerRight={false} status={"Active"} />
-                        <SeatingInformation addflag={false} headerRight={false} status={"Active"} />
-                        <TestPlanning addflag={false} headerRight={false} status={"Active"} />
+                          <BusinessImpact addflag={false}  headerRight={false} status={"Review Pending"} />
+                          <RiskAssessment addflag={false} headerRight={false} status={"Review Pending"} />
+                          <RecoveryObjectives addflag={false} headerRight={false} status={"Review Pending"} />
+                        <AwayTeam addflag={false} headerRight={false}  status={"Review Pending"} />
+                        <SeatingInformation addflag={false} headerRight={false} status={"Review Pending"} />
+                        <CommunicationPlan addflag={false} headerRight={false}   status={"Review Pending"} />
+                        <CommunicationsTree  addflag={false} headerRight={false}  status={"Review Pending"} />
+                        <HardWareSpecifications  addflag={false} headerRight={false} status={"Review Pending"} />
+                        <SoftwareSpecifications addflag={false} headerRight={false}  status={"Review Pending"} />
+                        <TestPlanning addflag={false} headerRight={false} status={"Review Pending"} />
                         <Col md = {"7"} style = {{"textAlign":"right"}}>
+                            <button class="btn btn-warning" onClick={this.sendComments} >Send Comments</button>
                             <button onClick={this.onApproveBcpm} className={"btn btn-success"}>
                                 {"Approve Business Continuity Plan"}
                             </button>

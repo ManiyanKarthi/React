@@ -27,14 +27,14 @@ constructor(props){
         fetch('/utility/getprojectdetails').then(res => res.json()).then(data =>{
             
                    this.setState({projectOptionlist:data.map(function(obj){
-                return obj.projectName+" - "+obj.id
+                return obj.projectName+"-"+obj.id
             })}); 
                                 
         })
         
          fetch('/utility/getlocationdetails').then(res => res.json()).then(data =>{
                    this.setState({locOptionlist:data.map(function(obj){
-                return obj.location+" - "+obj.id
+                return obj.location+"-"+obj.id
             })}); 
                                 
             })
@@ -66,12 +66,12 @@ constructor(props){
         let projectDetails=obj.currentTarget.innerText;
 
         
-        getPreviewData(obj.currentTarget.innerText);
+        this.getPreviewData(obj.currentTarget.innerText);
 
     }
 
     getPreviewData = (projectDetails)=>{
-        let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=ReviewPending'+'&projectDetails='+projectDetails;
+        let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=ReviewPending'+'&projectDetails='+projectDetails+'&typeoftest='+this.state.typeoftest;
     
         fetch(fetchurl).then(res => res.json()).then(data =>{
                     this.setState({prviewData:data,preview:true,showResults:false,projectDetails:projectDetails});                                
@@ -123,7 +123,7 @@ constructor(props){
 
         onSubmit = () => {
 
-             let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=ReviewPending';
+             let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=ReviewPending'+'&typeoftest='+this.state.typeoftest;
             
             this.getplanComments(this.state.locationvalue,this.state.projectvalue);
 
@@ -182,7 +182,7 @@ constructor(props){
         submitforApproval = () => {
 
              let fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=ReviewPending&projectDetails='+this.state.projectDetails;
-                fetchApi(fetchurl,JSON.stringify({status:'Approved'}));
+                fetchApi(fetchurl,JSON.stringify({status:'Approved',reportstatus:'Pending'}));
                 getPreviewData(this.state.projectDetails);
                 this.updateReviewComments();
         }
@@ -253,6 +253,7 @@ constructor(props){
 
         
     }
+
 
     render(){
 

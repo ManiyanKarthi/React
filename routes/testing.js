@@ -31,9 +31,18 @@ router.get('/getCommunicationtestplanning', (req, res,next) => {
    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
 var myQuery={};
   if(req.query.projectDetails){
-        myQuery = {location:req.query.location,project:req.query.project,status:req.query.status,projectDetails:req.query.projectDetails}
+       if(req.query.reportstatus){
+            myQuery = {location:req.query.location,project:req.query.project,reportstatus:req.query.reportstatus,projectDetails:req.query.projectDetails,typeoftest:req.query.typeoftest}
+          } else {
+            myQuery = {location:req.query.location,project:req.query.project,status:req.query.status,projectDetails:req.query.projectDetails,typeoftest:req.query.typeoftest}
+          }
   } else {
-        myQuery = {location:req.query.location,project:req.query.project,status:req.query.status}
+          if(req.query.reportstatus){
+             myQuery = {location:req.query.location,project:req.query.project,reportstatus:req.query.reportstatus,typeoftest:req.query.typeoftest}
+          } else if(req.query.location && req.query.project && req.query.status && req.query.typeoftest){
+            myQuery = {location:req.query.location,project:req.query.project,typeoftest:req.query.typeoftest,status:req.query.status}
+          }
+       
   }
   mongodb.getDatafromDb(req,res,"COMMUNICATION_TEST_DETAILS",myQuery);
    
@@ -42,14 +51,22 @@ var myQuery={};
 
 router.post('/updatetestplanstatus',jsonParser, (req, res,next) => {
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-      var parsedata = req.body; 
+      var parsedata = req.body;
+      console.log(parsedata) 
       var newvalues = { $set: parsedata };
       var myQuery={};
       if(req.query.projectDetails){
+          if(req.query.reportstatus){
+            myQuery = {location:req.query.location,project:req.query.project,reportstatus:req.query.reportstatus,projectDetails:req.query.projectDetails}
+          } else {
             myQuery = {location:req.query.location,project:req.query.project,status:req.query.status,projectDetails:req.query.projectDetails}
+          }
+            
       } else {
             myQuery = {location:req.query.location,project:req.query.project,status:req.query.status}
       }
+
+      console.log(myQuery);
       
       mongodb.updateManyDatainDb(req,res,"COMMUNICATION_TEST_DETAILS",myQuery,newvalues);
 
