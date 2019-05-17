@@ -9,7 +9,7 @@ import {TableColumnMapping} from './../../component/configurationdata';
 import fetchApi from './../../api/Api';
 import {formatAMPM} from './../../component/common/common';
 
-var testTypes = ["Communication Testing","Table Top Testing","WAR Testing","RC Testing"];
+var testTypes = ["Communication-Testing","Table-Top-Testing","WAR-Testing","RC-Testing"];
 var successMeasurelst = ["70%","80%","90%","100%"];
 
 class ViewTestReport extends React.Component{

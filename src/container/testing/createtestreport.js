@@ -7,7 +7,7 @@ import {GridColumnMapping} from './../../component/configurationdata';
 import UIFieldsGeneral from './../../component/uicomponent/UIFieldsGeneral';
 import {TableColumnMapping} from './../../component/configurationdata';
 import fetchApi from './../../api/Api';
-var testTypes = ["Communication Testing","Table Top Testing","WAR Testing","RC Testing"];
+var testTypes = ["Communication-Testing","Table-Top-Testing","WAR-Testing","RC-Testing"];
 var successMeasurelst = ["70%","80%","90%","100%"];
 
 class CreateTestReport extends React.Component{

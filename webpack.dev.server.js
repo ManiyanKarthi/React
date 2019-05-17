@@ -7,7 +7,7 @@ webpackConfig.then(config => {
     config.entry.main.unshift('webpack-dev-server/client?http://localhost/', 'webpack/hot/dev-server');
     const compiler = webpack(config);
     const websiteProxyConfig = {
-            target: 'http://localhost:8090/',
+            target: 'http://localhost:8091/',
             secure: false
         };
 
@@ -27,5 +27,5 @@ webpackConfig.then(config => {
         proxy: {
              '/':{...websiteProxyConfig},
             },
-    }).listen(8084, '0.0.0.0');
+    }).listen(8085, '0.0.0.0');
 });

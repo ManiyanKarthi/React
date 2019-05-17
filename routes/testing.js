@@ -28,19 +28,24 @@ router.post('/addtestplancomments',jsonParser, (req, res,next) => {
 
 
 router.get('/getCommunicationtestplanning', (req, res,next) => {
+  console.log(req.query.typeoftest.replace("%20",""));
    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
 var myQuery={};
   if(req.query.projectDetails){
        if(req.query.reportstatus){
             myQuery = {location:req.query.location,project:req.query.project,reportstatus:req.query.reportstatus,projectDetails:req.query.projectDetails,typeoftest:req.query.typeoftest}
-          } else {
+          } else if(req.query.location){
             myQuery = {location:req.query.location,project:req.query.project,status:req.query.status,projectDetails:req.query.projectDetails,typeoftest:req.query.typeoftest}
+          } else {
+            myQuery = {status:req.query.status.replace("%20",""),projectDetails:req.query.projectDetails.replace("%20",""),typeoftest:req.query.typeoftest.replace("%20","")}
           }
   } else {
           if(req.query.reportstatus){
              myQuery = {location:req.query.location,project:req.query.project,reportstatus:req.query.reportstatus,typeoftest:req.query.typeoftest}
           } else if(req.query.location && req.query.project && req.query.status && req.query.typeoftest){
             myQuery = {location:req.query.location,project:req.query.project,typeoftest:req.query.typeoftest,status:req.query.status}
+          } else {
+            myQuery = {location:req.query.location,project:req.query.project,typeoftest:req.query.typeoftest}
           }
        
   }

@@ -88,7 +88,7 @@ fetchData = ()=> {
         table.columnList[table.columnList.length-2].editable=false;
 
          if(this.props.status!=null) {
-                if(this.props.status=="Waiting for Rework") {
+                if(this.props.status=="WaitingforRework") {
                     table.columnList[table.columnList.length-1].hidden=false;
                     table.columnList[table.columnList.length-1].editable={type:'textarea'};
                      table.columnList[table.columnList.length-2].hidden=false;

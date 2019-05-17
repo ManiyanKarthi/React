@@ -428,10 +428,10 @@ router.post('/deleteTestPlanning',jsonParser, (req, res,next) => {
 
 router.post('/plansubmit',jsonParser, (req, res,next) => {
   var status ="Draft";
-  if(req.query.status=="Draft" || req.query.status=="Waiting for Rework"){
+  if(req.query.status=="Draft" || req.query.status=="WaitingforRework"){
     status="Review Pending";
   } else if(req.query.status=="Review Pending" && req.query.sendcomments!=null && req.query.sendcomments=="true"){
-    status="Waiting for Rework";
+    status="WaitingforRework";
   } else if(req.query.status=="Review Pending") {
     status = "Approved";
   } 

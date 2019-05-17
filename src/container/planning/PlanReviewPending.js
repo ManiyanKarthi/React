@@ -34,7 +34,7 @@ constructor(props) {
     }
 
   onSubmitBcpm = () => {
-            fetchApi('/planning/plansubmit?location='+localStorage.getItem("locationvalue")+'&project='+localStorage.getItem("projectvalue")+'&status=Waiting for Rework');
+            fetchApi('/planning/plansubmit?location='+localStorage.getItem("locationvalue")+'&project='+localStorage.getItem("projectvalue")+'&status=WaitingforRework');
             alert("Plan Submited Successfully")
             this.setState({showResults:false})
     }
@@ -60,16 +60,16 @@ constructor(props) {
                  <div style={{"display":"realtive","paddingBottom":"100px"}}>
                    <PlanningHeader  title={"Modify Plan"} headerRight={this.state.showResults?true:false} />
                      {this.state.showResults ?<div style={{"padding":"15px"}}>
-                          <BusinessImpact addflag={false}  headerRight={false} status={"Waiting for Rework"} />
-                          <RiskAssessment addflag={false} headerRight={false} status={"Waiting for Rework"} />
-                          <RecoveryObjectives addflag={false} headerRight={false} status={"Waiting for Rework"} />
-                        <AwayTeam addflag={false} headerRight={false}  status={"Waiting for Rework"} />
-                        <SeatingInformation addflag={false} headerRight={false} status={"Waiting for Rework"} />
-                        <CommunicationPlan addflag={false} headerRight={false}   status={"Waiting for Rework"} />
-                        <CommunicationsTree  addflag={false} headerRight={false}  status={"Waiting for Rework"} />
-                        <HardWareSpecifications  addflag={false} headerRight={false} status={"Waiting for Rework"} />
-                        <SoftwareSpecifications addflag={false} headerRight={false}  status={"Waiting for Rework"} />
-                        <TestPlanning addflag={false} headerRight={false} status={"Waiting for Rework"} />
+                          <BusinessImpact addflag={false}  headerRight={false} status={"WaitingforRework"} />
+                          <RiskAssessment addflag={false} headerRight={false} status={"WaitingforRework"} />
+                          <RecoveryObjectives addflag={false} headerRight={false} status={"WaitingforRework"} />
+                        <AwayTeam addflag={false} headerRight={false}  status={"WaitingforRework"} />
+                        <SeatingInformation addflag={false} headerRight={false} status={"WaitingforRework"} />
+                        <CommunicationPlan addflag={false} headerRight={false}   status={"WaitingforRework"} />
+                        <CommunicationsTree  addflag={false} headerRight={false}  status={"WaitingforRework"} />
+                        <HardWareSpecifications  addflag={false} headerRight={false} status={"WaitingforRework"} />
+                        <SoftwareSpecifications addflag={false} headerRight={false}  status={"WaitingforRework"} />
+                        <TestPlanning addflag={false} headerRight={false} status={"WaitingforRework"} />
                         <Col md = {"7"} style = {{"textAlign":"right"}}>
                             <button onClick={this.onSubmitBcpm} className={"btn btn-primary "}>
                                 {"Submit Business Continuity Plan"}

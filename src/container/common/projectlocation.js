@@ -9,7 +9,7 @@ class Projectlocation extends React.Component{
         this.onChangeprojectvalue = this.onChangeprojectvalue.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
           this.onchangestatus = this.onchangestatus.bind(this);
-       this.state= {locationvalue:"--Select--",projectvalue:"--Select--",locOptionlist:[],projectOptionlist:[],projectValidationError:false,locValidationError:false,status:"--Select--",statuslist:["Draft","Review Pending","Waiting for Rework","Approved"]}
+       this.state= {locationvalue:"--Select--",projectvalue:"--Select--",locOptionlist:[],projectOptionlist:[],projectValidationError:false,locValidationError:false,status:"--Select--",statuslist:["Draft","Review Pending","WaitingforRework","Approved"]}
 
     }
  componentWillMount() {

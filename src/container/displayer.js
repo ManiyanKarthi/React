@@ -21,6 +21,7 @@ import Testplanning from './planning/TestPlanning';
 import CreateTestPlan from './testing/CreateTestPlan';
 import CreateTestReport from './testing/CreateTestReport';
 import ReviewTestPlan from './testing/ReviewTestPlan';
+import ModifyTestPlan from './testing/modifytestplan';
 import ViewApprovedPlan from './testing/viewapprovedplan';
 import ViewTestReport from './testing/ViewTestReport';
 import ReviewTestReport from './testing/reviewTestReport';
@@ -56,6 +57,7 @@ class DisplayContainer extends React.Component{
                             <PrivateRoute path="/planning/viewplan" component={ViewPlan} /> 
                             <PrivateRoute path="/testing/createtestplan" component={CreateTestPlan} />
                             <PrivateRoute path="/testing/reviewtestplan" component={ReviewTestPlan} />
+                            <PrivateRoute path="/testing/modifytestplan" component={ModifyTestPlan} />
                             <PrivateRoute path="/testing/viewapprovedplan" component={ViewApprovedPlan} />
                             <PrivateRoute path="/testing/reviewtestreport" component={ReviewTestReport} />
                             <PrivateRoute path="/testing/createtestreport" component={CreateTestReport} />

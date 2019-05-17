@@ -71,7 +71,7 @@ constructor(props) {
                 urlnav="#/planning/createplan";
             } else if(kk.STATUS==="Review Pending"){
                 urlnav="#/planning/planreview";
-            } else if(kk.STATUS==="Waiting for Rework"){
+            } else if(kk.STATUS==="WaitingforRework"){
                 urlnav="#/planning/planreviewpending";
             } else if(kk.STATUS==="Approved"){
                 urlnav="#/planning/viewplan";

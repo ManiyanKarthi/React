@@ -8,7 +8,7 @@ import UIFieldsGeneral from './../../component/uicomponent/UIFieldsGeneral';
 import {TableColumnMapping} from './../../component/configurationdata';
 import fetchApi from './../../api/Api';
 
-var testTypes = ["Communication Testing","Table Top Testing","WAR Testing","RC Testing"];
+var testTypes = ["Communication-Testing","Table-Top-Testing","WAR-Testing","RC-Testing"];
 var getPreviewData;
 
 class ReviewTestPlan extends React.Component{
@@ -38,6 +38,26 @@ constructor(props){
             })}); 
                                 
             })
+
+
+            if(this.props.location.search!=null){
+                var url1 =  this.props.location.search;
+                if(url1!=""){
+                    var objlst = url1.split("?")[1].split("&");
+                    var locationvalue = objlst[1].split("=")[1];
+                    var projectvalue = objlst[0].split("=")[1];
+                    var projectDetails = objlst[2].split("=")[1];
+                    var typeoftest = objlst[3].split("=")[1];
+                    this.setState({
+                        locationvalue:locationvalue.replace(/%20/g, " "),
+                        projectvalue:projectvalue.replace(/%20/g, " "),
+                        typeoftest:typeoftest.replace(/%20/g, " ")
+                    });
+                    this.getplanComments(locationvalue.replace(/%20/g, " "),projectvalue.replace(/%20/g, " "));
+                    this.getPreviewwithProjectandtypeofTest(projectDetails.replace(/%20/g, " "),typeoftest.replace(/%20/g, " "));
+                }
+            }
+
   }
     onChangelocationvalue = (ths)=> {
             this.setState({
@@ -72,6 +92,14 @@ constructor(props){
 
     getPreviewData = (projectDetails)=>{
         let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=ReviewPending'+'&projectDetails='+projectDetails+'&typeoftest='+this.state.typeoftest;
+    
+        fetch(fetchurl).then(res => res.json()).then(data =>{
+                    this.setState({prviewData:data,preview:true,showResults:false,projectDetails:projectDetails});                                
+            });
+    }
+
+    getPreviewwithProjectandtypeofTest = (projectDetails,typeoftest)=>{
+        let fetchurl = '/testing/getCommunicationtestplanning?status=ReviewPending'+'&projectDetails='+projectDetails+'&typeoftest='+typeoftest;
     
         fetch(fetchurl).then(res => res.json()).then(data =>{
                     this.setState({prviewData:data,preview:true,showResults:false,projectDetails:projectDetails});                                
@@ -141,7 +169,7 @@ constructor(props){
         sendComments= () => {
 
               let fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=ReviewPending&projectDetails='+this.state.projectDetails;
-                fetchApi(fetchurl,JSON.stringify({status:'Draft'}));
+                fetchApi(fetchurl,JSON.stringify({status:'WaitingforRework'}));
                 getPreviewData(this.state.projectDetails)
                 this.updateReviewComments();
         } 

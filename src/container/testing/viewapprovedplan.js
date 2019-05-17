@@ -7,7 +7,7 @@ import {GridColumnMapping} from './../../component/configurationdata';
 import UIFieldsGeneral from './../../component/uicomponent/UIFieldsGeneral';
 import {TableColumnMapping} from './../../component/configurationdata';
 
-var testTypes = ["Communication Testing","Table Top Testing","WAR Testing","RC Testing"];
+var testTypes = ["Communication-Testing","Table-Top-Testing","WAR-Testing","RC-Testing"];
 
 class ViewApprovedPlan extends React.Component{
 constructor(props){
@@ -84,7 +84,7 @@ constructor(props){
     }
 
     getPreviewDatawithProject = (projectDetails,locationvalue,projectvalue)=>{
-        let fetchurl = '/testing/getCommunicationtestplanning?location='+locationvalue+'&project='+projectvalue+'&status=Approved'+'&projectDetails='+projectDetails+'&typeoftest='+this.state.typeoftest;
+        let fetchurl = '/testing/getCommunicationtestplanning?location='+locationvalue+'&project='+projectvalue+'&projectDetails='+projectDetails+'&typeoftest='+this.state.typeoftest;
     
         fetch(fetchurl).then(res => res.json()).then(data =>{
                     this.setState({prviewData:data,preview:true,showResults:false,projectDetails:projectDetails,locationvalue:locationvalue.replace(/%20/g, " "),projectvalue:projectvalue.replace(/%20/g, " ")});                                
@@ -160,7 +160,7 @@ constructor(props){
 
         onSubmit = () => {
                 
-             let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=Approved'+'&typeoftest='+this.state.typeoftest;
+             let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&typeoftest='+this.state.typeoftest;
              this.getplanComments(this.state.locationvalue,this.state.projectvalue);
             fetch(fetchurl).then(res => res.json()).then(data =>{
                         this.setState({data:data.map((obj) =>{
@@ -172,10 +172,35 @@ constructor(props){
                 
         }
 
-          dataFormatEvent = (obj)=> {
-            return <a href={window.location.href.toString().replace(/^.*\/\/[^\/]+/, '')} onClick={this.handleClick} >{obj}</a>
-        
-        }
+        dataFormatEvent1 = (obj)=> {
+        return <a href={window.location.href.toString().replace(/^.*\/\/[^\/]+/, '')} onClick={this.handleClick} >{obj}</a>
+    
+    }
+
+        dataFormatEvent = (obj,kk)=> {
+
+            let urlnav =""
+                 if(kk.status==="Draft"){
+                     urlnav="#/testing/createtestplan";
+                 } else if(kk.status==="ReviewPending"){
+                     urlnav="#/testing/reviewtestplan";
+                 } else if(kk.status==="WaitingforRework") {
+                    urlnav="#/testing/modifytestplan";
+                 } else if(kk.status==="Approved"){
+                     urlnav="#/testing/viewapprovedplan";
+                       return <a href={urlnav} onClick={() => {localStorage.setItem("locationvalue",kk.location);
+                                                                 localStorage.setItem("projectvalue",kk.project);
+                                                                    this.getPreviewData(kk.projectDetails);
+                                                                  }} >{obj}</a>;
+                 } 
+     
+                 if(urlnav==""){
+                   return obj;
+                 } else {
+                     return <a href={urlnav+'?project='+kk.project+'&location='+kk.location+'&projectDetails='+kk.projectDetails+'&typeoftest='+kk.typeoftest}  >{obj}</a>
+                 }
+             
+         }
 
         getcommunicationobj = (data)=> {
                 var kk = [{
@@ -456,7 +481,7 @@ constructor(props){
            
         return (
             <div className={"panel"}> 
-        <PlanningHeader  title={"View Approved Test Plan"} headerRight={false} /> 
+        <PlanningHeader  title={"View Test Plan"} headerRight={false} /> 
          <UIFieldsGeneral mapList={uiMap} />
 
             <div class="col-md-12" style={{"textAlign":"center","paddingTop":"20px"}} >
