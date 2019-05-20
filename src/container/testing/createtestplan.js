@@ -96,7 +96,7 @@ class MyVerticallyCenteredModal extends React.Component {
 
     addData = () =>{
 
-    this.props.onHide(this.state.primarytestervalue,this.state.primarytestervalue,this.state.planstartdateValue,this.state.planenddateValue,this.state.selctedgridData);
+    this.props.onHide(this.state.primarytestervalue,this.state.secondaryTestervalue,this.state.planstartdateValue,this.state.planenddateValue,this.state.selctedgridData);
 
     }
 
