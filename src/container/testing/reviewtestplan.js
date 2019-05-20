@@ -92,7 +92,7 @@ constructor(props){
 
     getPreviewData = (projectDetails)=>{
         let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=ReviewPending'+'&projectDetails='+projectDetails+'&typeoftest='+this.state.typeoftest;
-    
+
         fetch(fetchurl).then(res => res.json()).then(data =>{
                     this.setState({prviewData:data,preview:true,showResults:false,projectDetails:projectDetails});                                
             });

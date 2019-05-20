@@ -57,20 +57,20 @@ class MyVerticallyCenteredModal extends React.Component {
         }
         
     
-    onChangeprimaryTester = (ths)=> {
-
-        this.setState({
-                primarytestervalue:ths.currentTarget.selectedOptions[0].innerText+'('+ths.currentTarget.value+')',
-                primaryTester:ths.currentTarget.value
-            });
-    }
-
-      onChangesecondaryTester = (ths)=> {
-        this.setState({
-                secondaryTestervalue:ths.currentTarget.selectedOptions[0].innerText+'('+ths.currentTarget.value+')',
-                secondaryTester:ths.currentTarget.value
-            });
-    } 
+        onChangesecondaryTester = (ths)=> {
+            this.setState({
+                    secondaryTestervalue:ths.currentTarget.options[ths.currentTarget.selectedIndex].innerText+'('+ths.currentTarget.value+')',
+                    secondaryTester:ths.currentTarget.value
+                });
+        } 
+    
+        onChangeprimaryTester = (ths)=> {
+           
+            this.setState({
+                    primarytestervalue:ths.currentTarget.options[ths.currentTarget.selectedIndex].innerText+'('+ths.currentTarget.value+')',
+                    primaryTester:ths.currentTarget.value
+                });
+        }
 
       gridData = (obj) =>{
               let array = this.state.selctedgridData;
@@ -418,20 +418,7 @@ constructor(props){
 
     }
 
-    onChangesecondaryTester = (ths)=> {
-        this.setState({
-                secondaryTestervalue:ths.currentTarget.selectedOptions[0].innerText+'('+ths.currentTarget.value+')',
-                secondaryTester:ths.currentTarget.value
-            });
-    } 
-
-    onChangeprimaryTester = (ths)=> {
-
-        this.setState({
-                primarytestervalue:ths.currentTarget.selectedOptions[0].innerText+'('+ths.currentTarget.value+')',
-                primaryTester:ths.currentTarget.value
-            });
-    }
+   
 
 
 
@@ -739,12 +726,10 @@ constructor(props){
                         :
                         <div>
                             <div class="row">
-                                <div class="col-md-3.6">
-                                        <PlanningHeader  title={"Communication / Call Tree Details:"} headerRight={false} /> 
-                                </div>
-                                <div class="col-md-6"  style={{"paddingLeft": "20px"}} >
+                                
+                                <div class="col-md-12"  style={{"textAlign":"center"}} >
                                             <Button variant="primary" onClick={this.handleShow}>
-                                            Add
+                                            Add Communication / Call Tree Details
                                             </Button>
                                 </div> 
                             </div>
