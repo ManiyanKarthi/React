@@ -97,7 +97,7 @@ class MyVerticallyCenteredModal extends React.Component {
 
     addData = () =>{
 
-    this.props.onHide(this.state.primarytestervalue,this.state.primarytestervalue,this.state.planstartdateValue,this.state.planenddateValue,this.state.selctedgridData);
+    this.props.onHide(this.state.primarytestervalue,this.state.secondaryTestervalue,this.state.planstartdateValue,this.state.planenddateValue,this.state.selctedgridData);
 
     }
 
@@ -819,12 +819,9 @@ constructor(props){
                             <UIFieldsGeneral mapList={uiMap2} />
                             <div className={"panel"}> 
                             <div class="row">
-                                <div class="col-md-3.6">
-                                        <PlanningHeader  title={"Communication / Call Tree Details:"} headerRight={false} /> 
-                                </div>
-                                <div class="col-md-6"  style={{"paddingLeft": "20px"}} >
+                                <div class="col-md-12"  style={{"textAlign":"center"}} >
                                             <Button variant="primary" onClick={this.handleShow}>
-                                            Add
+                                            Add Communication / Call Tree Details
                                             </Button>
                                 </div> 
                             </div>
