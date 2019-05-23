@@ -254,7 +254,7 @@ constructor(props){
                         projectvalue:projectvalue.replace(/%20/g, " "),
                         typeoftest:typeoftest.replace(/%20/g, " ")
                     });
-                    this.getplanComments(locationvalue.replace(/%20/g, " "),projectvalue.replace(/%20/g, " "));
+                    this.getplanComments(locationvalue.replace(/%20/g, " "),projectvalue.replace(/%20/g, " "),typeoftest.replace(/%20/g, " "),projectDetails);
                     this.getPreviewwithProjectandtypeofTest(projectDetails.replace(/%20/g, " "),typeoftest.replace(/%20/g, " "));
                 }
             }
@@ -288,7 +288,7 @@ constructor(props){
 
         
         this.getPreviewData(obj.currentTarget.innerText);
-
+        this.getplanComments(this.state.locationvalue,this.state.projectvalue,this.state.typeoftest,projectDetails);
     }
 
     getPreviewData = (projectDetails)=>{
@@ -354,7 +354,6 @@ constructor(props){
 
              let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=WaitingforRework'+'&typeoftest='+this.state.typeoftest;
             
-            this.getplanComments(this.state.locationvalue,this.state.projectvalue);
 
             fetch(fetchurl).then(res => res.json()).then(data =>{
                         this.setState({allData:data,data:data.map((obj) =>{
@@ -381,6 +380,8 @@ constructor(props){
                 project:this.state.projectvalue,
                 location:this.state.locationvalue,
                 inscope:this.state.inscope,
+                typeoftest:this.state.typeoftest,
+                projectDetails:this.state.projectDetails,
                 outOfscope:this.state.outOfscope,
                 risk:this.state.risk,
                 dependency:this.state.dependency,
@@ -416,9 +417,9 @@ constructor(props){
                 this.updateReviewComments();
         }
 
-        getplanComments = (location,project) =>{
+        getplanComments = (location,project,typeoftest,projectDetails) =>{
         if(location!="--Select--" && project!="--Select--") {
-             fetch('/testing/getTestplanComments?location='+location+'&project='+project).then(res => res.json()).then(data =>{
+             fetch('/testing/getTestplanComments?location='+location+'&project='+project+'&typeoftest='+typeoftest+'&projectDetails='+projectDetails).then(res => res.json()).then(data =>{
              if(data.length>0){
                         this.setState({
                                 plancomments:data,
@@ -498,12 +499,18 @@ constructor(props){
                     planenddateValue:formatAMPM(new Date(planEndDate)),
                     primaryTester:primaryTester,
                     secondaryTester:secTester,
-                    projectDetails:this.state.projectvalue.toString().split("-")[1].trim()+'_'+this.state.locationvalue.toString().split("-")[1].trim()+'_'+monthNames[new Date(planstartDate).getMonth()]+'_'+new Date(planEndDate).getFullYear(),
+                    projectDetails:this.state.projectvalue.toString().split("-")[1].trim()+'_'+this.state.locationvalue.toString().split("-")[1].trim()+'_'+monthNames[new Date(planstartDate).getMonth()+1]+'_'+new Date(planEndDate).getFullYear(),
                     employeeData:selctedgridData.map((ths,i)=>{
                         return {id:ths.id,username:ths.username,primaryNumber:ths.primaryNumber};
                     })
                     ,status:"WaitingforRework"
                 }
+
+                this.setState({
+                    planstartdateValue:planstartDate,
+                    planenddateValue:planEndDate,
+                    projectDetails:json.projectDetails
+                })
 
                     let fetchurl = '/testing/addtestplan';
 
@@ -511,7 +518,7 @@ constructor(props){
 
                         fetchApi(fetchurl,JSON.stringify(json));
                     }
-                    this.getPreviewwithProjectandtypeofTest(this.state.projectvalue.toString().split("-")[1].trim()+'_'+this.state.locationvalue.toString().split("-")[1].trim()+'_'+monthNames[new Date(planstartDate).getMonth()]+'_'+new Date(planEndDate).getFullYear(),this.state.typeoftest);
+                    this.getPreviewwithProjectandtypeofTest(json.projectDetails,this.state.typeoftest);
             }
            
      this.setState({ modalShow: false });
@@ -566,6 +573,7 @@ constructor(props){
                 label:"Review Comments:",
                 validateflag:false,
                 required:false,
+                editable:false,
                 type:"textArea",
                 value:this.state.inscopereviewcomments,
                 onChange:(ths)=>{this.setState({
@@ -839,6 +847,7 @@ constructor(props){
                             </div>
                             
                                 {this.state.prviewData.length>0?<div class="col-md-12" style={{"textAlign":"center"}}>
+                                <button class="btn btn-success" onClick={() => { this.updateReviewComments(); alert("Saved Successfully ")}} >Save</button>
                                 <button class="btn btn-success" onClick={this.submitplan} >Submit Test Plan</button>
                             </div>:<div style={{"textAlign":"center"}} ><span>No Data to Display</span></div>}
                         </div>

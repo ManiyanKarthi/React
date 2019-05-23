@@ -6,7 +6,7 @@ import UIFieldsGeneral from './../../component/uicomponent/UIFieldsGeneral';
 import {formatAMPM} from './../../component/common/common';
 import './../../css/app.css';
 import BootstrapCustomTable from './../../component/table';
-import {TableColumnMapping,monthNames} from './../../component/configurationdata';
+import {TableColumnMapping,monthNames,GridColumnMapping} from './../../component/configurationdata';
 import fetchApi from './../../api/Api';
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
@@ -223,7 +223,7 @@ constructor(props){
         removeData =this.removeData.bind(this);
         getPreviewData = this.getPreviewData.bind(this);
         this.getplanComments=this.getplanComments.bind(this);
-       this.state= {modalShow: false,plancomments:[],prviewData:[],preview:true,gridData:[],selctedgridData:[],secondaryTesterLst:[],primaryTesterLst:[],typeoftest:"--Select--",planstartdateValue:new Date(),planenddateValue:new Date(),locationvalue:"--Select--",projectvalue:"--Select--",locOptionlist:[],projectOptionlist:[]}
+       this.state= {viewflag:false,tabledataview:false,showResults:false,modalShow: false,plancomments:[],prviewData:[],preview:true,gridData:[],selctedgridData:[],secondaryTesterLst:[],primaryTesterLst:[],typeoftest:"--Select--",planstartdateValue:new Date(),planenddateValue:new Date(),locationvalue:"--Select--",projectvalue:"--Select--",locOptionlist:[],projectOptionlist:[]}
 
     }
 
@@ -277,11 +277,12 @@ constructor(props){
                 this.setState({
                     locationvalue:locationvalue.replace(/%20/g, " "),
                     projectvalue:projectvalue.replace(/%20/g, " "),
-                    typeoftest:typeoftest.replace(/%20/g, " ")
+                    typeoftest:typeoftest.replace(/%20/g, " "),
+                    viewflag:true
                 });
                 getPreviewData(locationvalue.replace(/%20/g, " "),projectvalue.replace(/%20/g, " "),projectDetails,typeoftest.replace(/%20/g, " "));
 
-                this.getplanComments(locationvalue,projectvalue);
+                this.getplanComments(locationvalue,projectvalue,typeoftest,projectDetails);
                 localStorage.setItem("locationvalue",locationvalue.replace(/%20/g, " "));
                 localStorage.setItem("projectvalue",projectvalue.replace(/%20/g, " "));
                 
@@ -294,22 +295,20 @@ constructor(props){
             this.setState({
                 locationvalue:ths.currentTarget.value
             });
-        this.getplanComments(ths.currentTarget.value,this.state.projectvalue);
-          
+        
     }
 
     onChangeprojectvalue = (ths)=> {
         this.setState({
             projectvalue:ths.currentTarget.value
         });
-        
-        this.getplanComments(this.state.locationvalue,ths.currentTarget.value);
-       
+      
     }
 
-    getplanComments = (location,project) =>{
+    getplanComments = (location,project,typeoftest,projectDetails) =>{
+
         if(location!="--Select--" && project!="--Select--") {
-             fetch('/testing/getTestplanComments?location='+location+'&project='+project).then(res => res.json()).then(data =>{
+             fetch('/testing/getTestplanComments?location='+location+'&project='+project+'&typeoftest='+typeoftest+'&projectDetails='+projectDetails).then(res => res.json()).then(data =>{
              if(data.length>0){
                         this.setState({
                                 plancomments:data,
@@ -475,8 +474,11 @@ constructor(props){
                 risk:this.state.risk,
                 dependency:this.state.dependency,
                 constraints:this.state.constraints,
+                typeoftest:this.state.typeoftest,
+                projectDetails:this.state.projectvalue.toString().split("-")[1].trim()+'_'+this.state.locationvalue.toString().split("-")[1].trim()+'_'+monthNames[new Date(this.state.planstartdateValue).getMonth()+1]+'_'+new Date(this.state.planstartdateValue).getFullYear()
             }
-
+            let fetchurl;
+            
          if(this.state.plancomments.length===0){
 
             fetchurl = '/testing/addtestplancomments';
@@ -486,14 +488,21 @@ constructor(props){
                 fetchApi(fetchurl,JSON.stringify(json));
          }
 
+         if(ths!="save"){
+            fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=Draft';
+            fetchApi(fetchurl,JSON.stringify({status:'ReviewPending'}));
 
-           let fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=Draft';
-                fetchApi(fetchurl,JSON.stringify({status:'ReviewPending'}));
-               getPreviewData(this.state.locationvalue,this.state.projectvalue,'',this.state.typeoftest);
+            alert("Test Plan Submitted Successfully")
+           getPreviewData(this.state.locationvalue,this.state.projectvalue,this.state.projectDetails,this.state.typeoftest);
+         } else {
+            alert("Test Plan Saved Successfully")
+         }
+         this.getplanComments(this.state.locationvalue,this.state.projectvalue,json.typeoftest,json.projectDetails);
+           
     }
 
     getPreviewData = (locationvalue,projectvalue,projectDetails,typeoftest)=>{
-        let fetchurl = '/testing/getCommunicationtestplanning?location='+locationvalue+'&project='+projectvalue+'&status=Draft'+'&typeoftest='+typeoftest;
+        let fetchurl = '/testing/getCommunicationtestplanning?location='+locationvalue+'&project='+projectvalue+'&status=Draft'+'&typeoftest='+typeoftest+'&projectDetails='+projectDetails;
     
         fetch(fetchurl).then(res => res.json()).then(data =>{
                 if(projectDetails===""){
@@ -511,6 +520,51 @@ constructor(props){
     this.setState({ modalShow: true });
   }
 
+
+  onSubmit = () => {
+                
+    let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&typeoftest='+this.state.typeoftest+'&status=Draft';
+   
+    fetch(fetchurl).then(res => res.json()).then(data =>{
+                this.setState({dataview:data.map((obj) =>{
+                    obj.testPlanDate = obj.planstartdateValue+' - '+obj.planenddateValue;
+                    obj.projectDetails= obj.projectDetails;
+                    return obj;
+                }),showResults:true});                                
+        });
+        
+    }
+
+    dataFormatEvent = (obj,kk)=> {
+
+        let urlnav =""
+              if(kk.status==="Draft"){
+                 urlnav="#/testing/createtestplan";
+                   return <a href={urlnav} onClick={() => {localStorage.setItem("locationvalue",kk.location);
+                                                             localStorage.setItem("projectvalue",kk.project);
+                                                                this.setState({
+                                                                    viewflag:true,
+                                                                    projectDetails:kk.projectDetails,
+                                                                    planenddateValue:kk.planenddateValue,
+                                                                    planstartdateValue:kk.planstartdateValue
+                                                                })
+                                                                this.getPreviewData(kk.location,kk.project,kk.projectDetails,kk.typeoftest);
+                                                                
+                                                                this.getplanComments(kk.location,kk.project,kk.typeoftest,kk.projectDetails);
+
+                                                              }} >{obj}</a>;
+             } 
+ 
+             if(urlnav==""){
+               return obj;
+             } else {
+                 return <a href={urlnav+'?project='+kk.project+'&location='+kk.location+'&projectDetails='+kk.projectDetails+'&typeoftest='+kk.typeoftest}  >{obj}</a>
+             }
+         
+     }
+
+    
+
     render(){
 
             let modalClose = (primaryTester,secTester,planstartDate,planEndDate,selctedgridData) => {
@@ -523,12 +577,17 @@ constructor(props){
                                         planenddateValue:formatAMPM(new Date(planEndDate)),
                                         primaryTester:primaryTester,
                                         secondaryTester:secTester,
-                                        projectDetails:this.state.projectvalue.toString().split("-")[1].trim()+'_'+this.state.locationvalue.toString().split("-")[1].trim()+'_'+monthNames[new Date(this.state.planstartdateValue).getMonth()]+'_'+new Date(this.state.planstartdateValue).getFullYear(),
+                                        projectDetails:this.state.projectvalue.toString().split("-")[1].trim()+'_'+this.state.locationvalue.toString().split("-")[1].trim()+'_'+monthNames[new Date(planstartDate).getMonth()+1]+'_'+new Date(planstartDate).getFullYear(),
                                         employeeData:selctedgridData.map((ths,i)=>{
                                             return {id:ths.id,username:ths.username,primaryNumber:ths.primaryNumber};
                                         })
                                         ,status:"Draft"
                                     }
+
+                                    this.setState({
+                                        planstartdateValue:planstartDate,
+                                        planenddateValue:planEndDate,
+                                    })
 
                                         let fetchurl = '/testing/addtestplan';
 
@@ -536,7 +595,7 @@ constructor(props){
 
                                             fetchApi(fetchurl,JSON.stringify(json));
                                         }
-                                        getPreviewData(this.state.locationvalue,this.state.projectvalue,'',this.state.typeoftest);
+                                        getPreviewData(this.state.locationvalue,this.state.projectvalue,json.projectDetails,this.state.typeoftest);
                                 }
                                
                          this.setState({ modalShow: false });
@@ -614,7 +673,7 @@ constructor(props){
                 })
             })
             })
-            getPreviewData(this.state.locationvalue,this.state.projectvalue,'',this.state.typeoftest);
+            getPreviewData(this.state.locationvalue,this.state.projectvalue,this.state.projectDetails,this.state.typeoftest);
 
             }
         };
@@ -623,6 +682,36 @@ constructor(props){
         tablepreview.selectRow = {mode: 'checkbox'}
         tablepreview.search = false;
 
+        var uiMapview = [{
+            fields:[{ 
+                field:true,
+                label:"Project",
+                validateflag:false,
+                required:false,
+                type:"select",
+                value:this.state.projectvalue,
+                onChange:this.onChangeprojectvalue,
+                selectList:this.state.projectOptionlist
+            },{  
+                field:true,
+                label:"Location:",
+                type:"select",
+                validateflag:false,
+                required:false,
+                value:this.state.locationvalue,
+                onChange:this.onChangelocationvalue,
+                selectList:this.state.locOptionlist
+            },{ 
+                field:true, 
+                label:"Type of Test:",
+                type:"select",
+                validateflag:false,
+                required:false,
+                value:this.state.typeoftest,
+                onChange:this.onChangetypeOftest,
+                selectList:testTypes
+            } ]
+        }];
 
         var uiMap = [{
                     fields:[{ 
@@ -706,6 +795,17 @@ constructor(props){
                     } ]
                 }];
            
+                var tabledataview = {};
+                tabledataview.data=[];
+                var obj = GridColumnMapping.ReviewTestPlan;
+                //Event handler 
+                obj[0].dataFormatClick=this.dataFormatEvent;
+        
+                tabledataview.columnList = obj;
+                tabledataview.exportCSV=false;
+                tabledataview.deleteRow=false;
+                tabledataview.insertRow=false;
+                tabledataview.search=false;
 
         return (
            
@@ -717,8 +817,8 @@ constructor(props){
                    
                     <PlanningHeader  title={"Create Test Plan"} headerRight={false} /> 
                    
-                    <UIFieldsGeneral mapList={uiMap} />
-
+                    {this.state.viewflag?<div><UIFieldsGeneral mapList={uiMap} />
+                        
                 <div className={"panel"}> 
                         
                         {!this.state.preview?
@@ -745,11 +845,30 @@ constructor(props){
                             }
                             )}
                             {this.state.prviewData.length>0?<div class="col-md-12" style={{"textAlign":"center"}}>
-                                <button class="btn btn-success" onClick={this.submitforApproval} >Submit for Approval</button>
+                            <button class="btn btn-success" onClick={() => {this.submitforApproval('save')}} >Save</button> <button class="btn btn-success" onClick={this.submitforApproval} >Submit for Approval</button>
                             </div>:<div style={{"textAlign":"center"}} ><span></span></div>}
                         </div>
                         }
-                </div>   
+                </div> 
+                    </div>
+                    :
+                    
+                    <div>
+                        <UIFieldsGeneral mapList={uiMapview} />
+                    
+                    <div class="col-md-12" style={{"textAlign":"center","paddingTop":"20px","paddingBottom":"20px"}} >
+                        <button class="btn btn-success" onClick={this.onSubmit} >Go!</button>
+                    </div>
+                    {this.state.showResults ? <div>
+                        <div class="col-md-12" style={{"textAlign":"left","paddingTop":"20px","paddingBottom":"20px"}} >
+                        <button class="btn btn-info" onClick={() => {
+                            this.setState({viewflag:true,inscope:"",outOfscope:"",risk:"",dependency:"",constraints:"",planstartdateValue:"",planenddateValue:""})
+                        }} >Create Test Plan</button>
+                        </div>
+                        <BootstrapCustomTable table={tabledataview} data={this.state.dataview} /></div> : null }
+                    </div>}
+                   
+  
             </div>
         )
     }

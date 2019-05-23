@@ -72,9 +72,9 @@ constructor(props){
             });
     }
 
-    getplanComments = (location,project) =>{
+    getplanComments = (location,project,typeoftest,projectDetails) =>{
         if(location!="--Select--" && project!="--Select--") {
-             fetch('/testing/getTestplanComments?location='+location+'&project='+project).then(res => res.json()).then(data =>{
+             fetch('/testing/getTestplanComments?location='+location+'&project='+project+'&typeoftest='+typeoftest+'&projectDetails='+projectDetails).then(res => res.json()).then(data =>{
              if(data.length>0){
                         this.setState({
                                 plancomments:data,
@@ -145,7 +145,7 @@ constructor(props){
         onSubmit = () => {
                 
              let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&reportstatus=Pending'+'&typeoftest='+this.state.typeoftest;
-             this.getplanComments(this.state.locationvalue,this.state.projectvalue);
+             this.getplanComments(this.state.locationvalue,this.state.projectvalue,this.state.typeoftest,this.state.projectDetails);
             fetch(fetchurl).then(res => res.json()).then(data =>{
                         this.setState({data:data.map((obj) =>{
                             obj.testPlanDate = obj.planstartdateValue+' - '+obj.planenddateValue;
@@ -310,9 +310,9 @@ constructor(props){
               let fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&reportstatus=Pending&projectDetails='+this.state.projectDetails;
                 fetchApi(fetchurl,JSON.stringify({reportstatus:'ReviewPending'}));
                 
-                                this.updateReviewComments();
-
-                       
+                               this.setState({
+                                createTestReport:false
+                               })
                     
                     alert("Updated successfully");
 
@@ -665,7 +665,7 @@ constructor(props){
                         null
                         :
                         <div>
-                            <UIFieldsGeneral mapList={uiMap2} />
+                            
                             <div className={"panel"}> 
                             <PlanningHeader  title={"Communication / Call Tree Details:"} headerRight={false} />
                             {this.state.createTestReport?<UIFieldsGeneral mapList={successMeasure} />:null}

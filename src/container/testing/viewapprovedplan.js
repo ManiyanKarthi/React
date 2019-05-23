@@ -8,6 +8,7 @@ import UIFieldsGeneral from './../../component/uicomponent/UIFieldsGeneral';
 import {TableColumnMapping} from './../../component/configurationdata';
 
 var testTypes = ["Communication-Testing","Table-Top-Testing","WAR-Testing","RC-Testing"];
+var statuslst = ["All","Draft","ReviewPending","WaitingforRework","Approved"];
 
 class ViewApprovedPlan extends React.Component{
 constructor(props){
@@ -17,7 +18,7 @@ constructor(props){
         this.onChangetypeOftest = this.onChangetypeOftest.bind(this);
 
         this.onSubmit = this.onSubmit.bind(this);
-       this.state= {showResults:false,typeoftest:"--Select--",locationvalue:"--Select--",projectvalue:"--Select--",locOptionlist:[],projectOptionlist:[],projectValidationError:false,locValidationError:false}
+       this.state= {status:"--Select--",showResults:false,typeoftest:"--Select--",locationvalue:"--Select--",projectvalue:"--Select--",locOptionlist:[],projectOptionlist:[],projectValidationError:false,locValidationError:false}
 
     }
  componentWillMount() {
@@ -42,7 +43,9 @@ constructor(props){
                 var objlst = url1.split("?")[1].split("&");
                 var locationvalue = objlst[2].split("=")[1];
                 var projectvalue = objlst[1].split("=")[1]
-                this.getplanComments(locationvalue.replace(/%20/g, " "),projectvalue.replace(/%20/g, " "));
+                var projectDetails = objlst[2].split("=")[1];
+                var typeoftest = objlst[3].split("=")[1];
+                this.getplanComments(locationvalue.replace(/%20/g, " "),projectvalue.replace(/%20/g, " "),typeoftest,projectDetails);
                 this.getPreviewDatawithProject(objlst[0].split("=")[1],locationvalue.replace(/%20/g, " "),projectvalue.replace(/%20/g, " "));
             }
         }
@@ -72,6 +75,7 @@ constructor(props){
 
         
         this.getPreviewData(obj.currentTarget.innerText);
+        this.getplanComments(this.state.locationvalue,this.state.projectvalue,this.state.typeoftest,projectDetails);
 
     }
 
@@ -91,9 +95,9 @@ constructor(props){
             });
     }
 
-    getplanComments = (location,project) =>{
+    getplanComments = (location,project,typeoftest,projectDetails) =>{
         if(location!="--Select--" && project!="--Select--") {
-             fetch('/testing/getTestplanComments?location='+location+'&project='+project).then(res => res.json()).then(data =>{
+             fetch('/testing/getTestplanComments?location='+location+'&project='+project+'&typeoftest='+typeoftest+'&projectDetails='+projectDetails).then(res => res.json()).then(data =>{
              if(data.length>0){
                         this.setState({
                                 plancomments:data,
@@ -159,9 +163,13 @@ constructor(props){
     }
 
         onSubmit = () => {
-                
-             let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&typeoftest='+this.state.typeoftest;
-             this.getplanComments(this.state.locationvalue,this.state.projectvalue);
+
+            let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&typeoftest='+this.state.typeoftest;
+                if(this.state.status!="All") {
+                    fetchurl = fetchurl+'&status='+this.state.status
+                }
+           
+             
             fetch(fetchurl).then(res => res.json()).then(data =>{
                         this.setState({data:data.map((obj) =>{
                             obj.testPlanDate = obj.planstartdateValue+' - '+obj.planenddateValue;
@@ -191,6 +199,7 @@ constructor(props){
                        return <a href={urlnav} onClick={() => {localStorage.setItem("locationvalue",kk.location);
                                                                  localStorage.setItem("projectvalue",kk.project);
                                                                     this.getPreviewData(kk.projectDetails);
+                                                                    this.getplanComments(kk.location,kk.project,kk.typeoftest,kk.projectDetails);
                                                                   }} >{obj}</a>;
                  } 
      
@@ -287,6 +296,23 @@ constructor(props){
                         onChange:this.onChangetypeOftest,
                         selectList:testTypes
                     } ]
+                },{
+                    fields:[{  
+                        field:true, 
+                        label:"Status:",
+                        type:"select",
+                        validateflag:false,
+                        required:false,
+                        value:this.state.status,
+                        onChange:(ths) => { this.setState({
+                            status:ths.currentTarget.value
+                        });
+                    },
+                        selectList:statuslst
+                    },{ field:false
+                    },{ 
+                        field:false 
+                    }]
                 }];
 
 

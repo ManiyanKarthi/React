@@ -89,7 +89,7 @@ router.post('/updatetestplancomments',jsonParser, (req, res,next) => {
 
 router.get('/getTestplanComments', (req, res,next) => {
  res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-  mongodb.getDatafromDb(req,res,"COMMUNICATION_TEST_DETAILS_COMMENTS",{location:req.query.location,project:req.query.project});
+  mongodb.getDatafromDb(req,res,"COMMUNICATION_TEST_DETAILS_COMMENTS",{location:req.query.location,project:req.query.project,typeoftest:req.query.typeoftest,projectDetails:req.query.projectDetails});
    
 })
 

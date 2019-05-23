@@ -35,7 +35,7 @@ class HeaderContainer extends React.Component{
                         {classn}
                     </button>
                     &nbsp;&nbsp;
-                    <span className={"headerTitle"}>Business continuity plan</span>
+                    <span className={"headerTitle"}></span>
                 </Col>
                 <div class="col-md-6" style={{"textAlign":"right"}} >
                     {flag?

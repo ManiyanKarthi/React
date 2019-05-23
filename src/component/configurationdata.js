@@ -160,7 +160,7 @@ const URLmapping = {
 					"text": "Modify Test Plan",
 					"icontext": "MP",
 					"href": "#/testing/modifytestplan",
-					"severity": ["Admin", "Manager"]
+					"severity": ["Admin", "Tester"]
 				},
 				{
 					"text": "View Test Plan",

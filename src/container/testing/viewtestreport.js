@@ -96,7 +96,7 @@ constructor(props){
 
      getplanComments = (location,project) =>{
         if(location!="--Select--" && project!="--Select--") {
-             fetch('/testing/getTestplanComments?location='+location+'&project='+project).then(res => res.json()).then(data =>{
+             fetch('/testing/getTestplanComments?location='+location+'&project='+project+'&typeoftest='+this.state.typeoftest+'&projectDetails='+this.state.projectDetails).then(res => res.json()).then(data =>{
              if(data.length>0){
                         this.setState({
                                 plancomments:data,
@@ -525,7 +525,6 @@ constructor(props){
                         null
                         :
                         <div>
-                            <UIFieldsGeneral mapList={uiMap2} />
                             <div className={"panel"}> 
                             <PlanningHeader  title={"Communication / Call Tree Details:"} headerRight={false} />
                             {this.state.successMesure?<UIFieldsGeneral mapList={successMeasure} />:null}

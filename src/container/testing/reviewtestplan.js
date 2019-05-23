@@ -53,7 +53,7 @@ constructor(props){
                         projectvalue:projectvalue.replace(/%20/g, " "),
                         typeoftest:typeoftest.replace(/%20/g, " ")
                     });
-                    this.getplanComments(locationvalue.replace(/%20/g, " "),projectvalue.replace(/%20/g, " "));
+                    this.getplanComments(locationvalue.replace(/%20/g, " "),projectvalue.replace(/%20/g, " "),typeoftest.replace(/%20/g, " "),projectDetails);
                     this.getPreviewwithProjectandtypeofTest(projectDetails.replace(/%20/g, " "),typeoftest.replace(/%20/g, " "));
                 }
             }
@@ -87,6 +87,8 @@ constructor(props){
 
         
         this.getPreviewData(obj.currentTarget.innerText);
+
+        this.getplanComments(this.state.locationvalue,this.state.projectvalue,this.state.typeoftest,projectDetails);
 
     }
 
@@ -179,6 +181,7 @@ constructor(props){
             let json = {
                 project:this.state.projectvalue,
                 location:this.state.locationvalue,
+                typeoftest:this.state.typeoftest,
                 inscope:this.state.inscope,
                 outOfscope:this.state.outOfscope,
                 risk:this.state.risk,
@@ -215,9 +218,9 @@ constructor(props){
                 this.updateReviewComments();
         }
 
-        getplanComments = (location,project) =>{
+        getplanComments = (location,project,typeoftest,projectDetails) =>{
         if(location!="--Select--" && project!="--Select--") {
-             fetch('/testing/getTestplanComments?location='+location+'&project='+project).then(res => res.json()).then(data =>{
+             fetch('/testing/getTestplanComments?location='+location+'&project='+project+'&typeoftest='+typeoftest+'&projectDetails='+projectDetails).then(res => res.json()).then(data =>{
              if(data.length>0){
                         this.setState({
                                 plancomments:data,
@@ -595,8 +598,10 @@ constructor(props){
                             </div>
                             
                                 {this.state.prviewData.length>0?<div class="col-md-12" style={{"textAlign":"center"}}>
+                                
+                                <button class="btn btn-success" onClick={() =>{this.updateReviewComments(); alert("Saved Successfully") }} >Save</button>
                                 <button class="btn btn-warning" onClick={this.sendComments} >Send Comments</button>
-                                <button class="btn btn-success" onClick={this.submitforApproval} >Submit for Approval</button>
+                                <button class="btn btn-success" onClick={this.submitforApproval} >Approve</button>
                             </div>:<div style={{"textAlign":"center"}} ><span>No Data to Display</span></div>}
                         </div>
                         }
