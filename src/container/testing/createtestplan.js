@@ -463,6 +463,33 @@ constructor(props){
             return kk;
             }
 
+     updatecomments  =() => {
+
+        let fetchurl;
+        let json = {
+            project:this.state.projectvalue,
+            location:this.state.locationvalue,
+            inscope:this.state.inscope,
+            outOfscope:this.state.outOfscope,
+            risk:this.state.risk,
+            dependency:this.state.dependency,
+            constraints:this.state.constraints,
+            typeoftest:this.state.typeoftest,
+            projectDetails:this.state.projectvalue.toString().split("-")[1].trim()+'_'+this.state.locationvalue.toString().split("-")[1].trim()+'_'+monthNames[new Date(this.state.planstartdateValue).getMonth()+1]+'_'+new Date(this.state.planstartdateValue).getFullYear()
+        }
+      
+        
+     if(this.state.plancomments.length===0){
+
+        fetchurl = '/testing/addtestplancomments';
+            fetchApi(fetchurl,JSON.stringify(json));
+     } else {
+          fetchurl = '/testing/updatetestplancomments?_id='+this.state.plancomments[0]._id;
+            fetchApi(fetchurl,JSON.stringify(json));
+     }
+
+
+     }     
 
     submitforApproval = (ths)=>{
 
@@ -588,6 +615,7 @@ constructor(props){
                                         planstartdateValue:planstartDate,
                                         planenddateValue:planEndDate,
                                     })
+                                    this.getplanComments(this.state.locationvalue,this.state.projectvalue,this.state.typeoftest,json.projectDetails);
 
                                         let fetchurl = '/testing/addtestplan';
 
