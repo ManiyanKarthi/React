@@ -108,10 +108,10 @@ constructor(props) {
             saveText: 'Save',
             closeText: 'Close',
             afterDeleteRow: function(rowKeys,obj) {
-                alert('CommunicationPlan  Deleted' );
+                
                 fetchurl = '/planning/deleteCommunicationPlan';
 
-               fetchApi(fetchurl,JSON.stringify(obj));
+               fetchApi(fetchurl,JSON.stringify(obj)).then(()=>{alert('CommunicationPlan  Deleted' ); });
 
             },afterInsertRow: function(obj) {
 

@@ -369,9 +369,11 @@ constructor(props){
         submitplan= () => {
 
               let fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=WaitingforRework&projectDetails='+this.state.projectDetails;
-                fetchApi(fetchurl,JSON.stringify({status:'ReviewPending'}));
-                getPreviewData(this.state.projectDetails)
-                this.updateReviewComments();
+                fetchApi(fetchurl,JSON.stringify({status:'ReviewPending'})).then(() => {
+                    getPreviewData(this.state.projectDetails)
+                    this.updateReviewComments();
+                 });
+               
         } 
 
         updateReviewComments = () => {
@@ -412,9 +414,12 @@ constructor(props){
         submitforApproval = () => {
 
              let fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=WaitingforRework&projectDetails='+this.state.projectDetails;
-                fetchApi(fetchurl,JSON.stringify({status:'Approved',reportstatus:'Pending'}));
-                getPreviewData(this.state.projectDetails);
-                this.updateReviewComments();
+                fetchApi(fetchurl,JSON.stringify({status:'Approved',reportstatus:'Pending'})).then(()=> {
+                    getPreviewData(this.state.projectDetails);
+                    this.updateReviewComments();
+
+                });
+               
         }
 
         getplanComments = (location,project,typeoftest,projectDetails) =>{
@@ -516,9 +521,12 @@ constructor(props){
 
                     if(json.employeeData.length>0){
 
-                        fetchApi(fetchurl,JSON.stringify(json));
+                        fetchApi(fetchurl,JSON.stringify(json)).then(() =>{
+                            this.getPreviewwithProjectandtypeofTest(json.projectDetails,this.state.typeoftest);
+
+                        });
                     }
-                    this.getPreviewwithProjectandtypeofTest(json.projectDetails,this.state.typeoftest);
+                    
             }
            
      this.setState({ modalShow: false });

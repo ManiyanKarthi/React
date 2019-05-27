@@ -302,7 +302,7 @@ const monthNames = ["","January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ]
 const GridColumnMapping = {
-	"ReviewTestPlan":[{"dataTitle":"Document Id", "dataField":"projectDetails",dataFormat:true},{"dataTitle":"Project", "dataField":"project"},{"dataTitle":"Location", "dataField":"location"},{"dataTitle":"Type of Test", "dataField":"typeoftest"},{"dataTitle":"Status", "dataField":"status",dataFormat:true}, {"dataTitle":"Testing date", "dataField":"testPlanDate"}]
+	"ReviewTestPlan":[{"dataTitle":"Document Id", "dataField":"projectDetails",dataFormat:true},{"dataTitle":"Project", "dataField":"project"},{"dataTitle":"Location", "dataField":"location"},{"dataTitle":"Type of Test", "dataField":"typeoftest"},{"dataTitle":"Status", "dataField":"status",dataFormat:true},{"dataTitle":"Created date", "dataField":"createdDate"} ,{"dataTitle":"Testing date", "dataField":"testPlanDate"}]
 	,"SearchTestPlanReport":[{"dataTitle":"Document Id", "dataField":"projectDetails",dataFormat:true},{"dataTitle":"Status", "dataField":"status",dataFormat:true}, {"dataTitle":"Testing date", "dataField":"testPlanDate"}, {"dataTitle":"Test Report Status", "dataField":"reportstatus"}]
 }
 

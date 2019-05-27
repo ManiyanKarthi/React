@@ -213,9 +213,12 @@ constructor(props){
         submitforApproval = () => {
 
              let fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=ReviewPending&projectDetails='+this.state.projectDetails;
-                fetchApi(fetchurl,JSON.stringify({status:'Approved',reportstatus:'Pending'}));
-                getPreviewData(this.state.projectDetails);
-                this.updateReviewComments();
+                fetchApi(fetchurl,JSON.stringify({status:'Approved',reportstatus:'Pending'})).then(() => {
+                    getPreviewData(this.state.projectDetails);
+                    this.updateReviewComments();
+
+                });
+                
         }
 
         getplanComments = (location,project,typeoftest,projectDetails) =>{

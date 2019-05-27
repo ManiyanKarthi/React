@@ -73,7 +73,7 @@ constructor(props){
     handleClick = (obj) => {
         let projectDetails=obj.currentTarget.innerText;
 
-        
+        this.getplanComments(this.state.locationvalue,this.state.projectvalue,this.state.typeoftest,projectDetails);
         this.getPreviewData(obj.currentTarget.innerText);
 
     }

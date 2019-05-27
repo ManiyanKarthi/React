@@ -60,7 +60,7 @@ constructor(props){
     handleClick = (obj) => {
         let projectDetails=obj.currentTarget.innerText;
 
-        
+        this.getplanComments(this.state.locationvalue,this.state.projectvalue,this.state.typeoftest,projectDetails);
         this.getPreviewData(obj.currentTarget.innerText);
 
     }
@@ -205,19 +205,24 @@ constructor(props){
         sendComments= () => {
 
               let fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&reportstatus=ReviewPending&projectDetails='+this.state.projectDetails;
-                fetchApi(fetchurl,JSON.stringify({reportstatus:'Pending'}));
-                this.getPreviewData(this.state.projectDetails)
-                this.updateReviewComments();
-                  this.setState({successMesure:false});
+                fetchApi(fetchurl,JSON.stringify({reportstatus:'Pending'})).then(()=>{
+                    this.getPreviewData(this.state.projectDetails)
+                    this.updateReviewComments();
+                      this.setState({successMesure:false});
+
+                });
+                
         } 
 
         approveReport= () => {
 
               let fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&reportstatus=ReviewPending&projectDetails='+this.state.projectDetails;
-                fetchApi(fetchurl,JSON.stringify({reportstatus:'Approved'}));
-                this.getPreviewData(this.state.projectDetails)
-                this.updateReviewComments();
-                this.setState({successMesure:false});
+                fetchApi(fetchurl,JSON.stringify({reportstatus:'Approved'})).then(()=> {
+                    this.getPreviewData(this.state.projectDetails)
+                    this.updateReviewComments();
+                    this.setState({successMesure:false});
+                });
+               
         } 
 
          testPlanStatus = (obj)=> {

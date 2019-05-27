@@ -112,21 +112,14 @@ constructor(props) {
             saveText: 'Save',
             closeText: 'Close',
             afterDeleteRow: function(rowKeys,obj) {
-                alert('AwayTeam  Deleted' );
+                
                   fetchurl = '/planning/deleteAwayTeam';
-                  fetchApi(fetchurl,JSON.stringify(obj));
+                  fetchApi(fetchurl,JSON.stringify(obj)).then(()=>{alert('AwayTeam  Deleted' );});
 
             },afterInsertRow: function(obj) {
                 fetchurl = '/planning/addAwayTeam?location='+localStorage.getItem("locationvalue")+'&project='+localStorage.getItem("projectvalue");
 
-                fetch(fetchurl, {
-                    method: 'POST',
-                    headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(obj)
-                }).then(res => res.json()).then(data=> fetchData());
+                fetchApi(fetchurl,JSON.stringify(obj)).then(data=> fetchData());
 
             }
         };

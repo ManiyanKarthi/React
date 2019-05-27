@@ -59,7 +59,7 @@ constructor(props){
     handleClick = (obj) => {
         let projectDetails=obj.currentTarget.innerText;
 
-        
+        this.getplanComments(this.state.locationvalue,this.state.projectvalue,this.state.typeoftest,projectDetails);
         this.getPreviewData(obj.currentTarget.innerText);
 
     }
@@ -67,6 +67,7 @@ constructor(props){
      getPreviewData = (projectDetails)=>{
         let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&reportstatus=Pending'+'&projectDetails='+projectDetails+'&typeoftest='+this.state.typeoftest;
     
+
         fetch(fetchurl).then(res => res.json()).then(data =>{
                     this.setState({prviewData:data,preview:true,showResults:false,projectDetails:projectDetails});                                
             });
@@ -145,7 +146,7 @@ constructor(props){
         onSubmit = () => {
                 
              let fetchurl = '/testing/getCommunicationtestplanning?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&reportstatus=Pending'+'&typeoftest='+this.state.typeoftest;
-             this.getplanComments(this.state.locationvalue,this.state.projectvalue,this.state.typeoftest,this.state.projectDetails);
+            
             fetch(fetchurl).then(res => res.json()).then(data =>{
                         this.setState({data:data.map((obj) =>{
                             obj.testPlanDate = obj.planstartdateValue+' - '+obj.planenddateValue;
@@ -308,15 +309,18 @@ constructor(props){
                     });
 
               let fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&reportstatus=Pending&projectDetails='+this.state.projectDetails;
-                fetchApi(fetchurl,JSON.stringify({reportstatus:'ReviewPending'}));
-                
-                               this.setState({
-                                createTestReport:false
-                               })
-                    
-                    alert("Updated successfully");
+                fetchApi(fetchurl,JSON.stringify({reportstatus:'ReviewPending'})).then(()=>{
+                    this.setState({
+                        createTestReport:false
+                       })
+            
+                   alert("Updated successfully");
+               this.updateReviewComments();
+              this.getPreviewData(this.state.projectDetails);
 
-                    this.getPreviewData(this.state.projectDetails);
+                });
+                
+                              
 
 
         }
@@ -324,23 +328,23 @@ constructor(props){
          updateReviewComments = () => {
             var fetchurl=null;
             let json = {
-                project:this.state.projectvalue,
-                location:this.state.locationvalue,
-                inscope:this.state.inscope,
-                outOfscope:this.state.outOfscope,
-                risk:this.state.risk,
-                dependency:this.state.dependency,
-                constraints:this.state.constraints,
-                inscopereviewcomments:this.state.inscopereviewcomments,
-                inscopechampcomments:this.state.inscopechampcomments,
-                outofscopereviewcomments:this.state.outofscopereviewcomments,
-                outofscopechampcomments:this.state.outofscopechampcomments,
-                riskreviewcomments:this.state.riskreviewcomments,
-                riskchampcomments:this.state.riskchampcomments,
-                dependencyreviewcomments:this.state.dependencyreviewcomments,
-                dependencychampcomments:this.state.dependencychampcomments,
-                constraintreviewcomments:this.state.constraintreviewcomments,
-                constraintchampcomments:this.state.constraintchampcomments,
+                //project:this.state.projectvalue,
+                //location:this.state.locationvalue,
+                //inscope:this.state.inscope,
+                //outOfscope:this.state.outOfscope,
+               // risk:this.state.risk,
+                //dependency:this.state.dependency,
+               // constraints:this.state.constraints,
+               // inscopereviewcomments:this.state.inscopereviewcomments,
+                //inscopechampcomments:this.state.inscopechampcomments,
+                //outofscopereviewcomments:this.state.outofscopereviewcomments,
+               // outofscopechampcomments:this.state.outofscopechampcomments,
+                //riskreviewcomments:this.state.riskreviewcomments,
+                //riskchampcomments:this.state.riskchampcomments,
+                //dependencyreviewcomments:this.state.dependencyreviewcomments,
+                //dependencychampcomments:this.state.dependencychampcomments,
+                //constraintreviewcomments:this.state.constraintreviewcomments,
+                //constraintchampcomments:this.state.constraintchampcomments,
                 successMeasure:this.state.successMeasure
             }
 

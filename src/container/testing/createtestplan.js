@@ -278,7 +278,8 @@ constructor(props){
                     locationvalue:locationvalue.replace(/%20/g, " "),
                     projectvalue:projectvalue.replace(/%20/g, " "),
                     typeoftest:typeoftest.replace(/%20/g, " "),
-                    viewflag:true
+                    viewflag:true,
+                    projectDetails:projectDetails
                 });
                 getPreviewData(locationvalue.replace(/%20/g, " "),projectvalue.replace(/%20/g, " "),projectDetails,typeoftest.replace(/%20/g, " "));
 
@@ -517,10 +518,13 @@ constructor(props){
 
          if(ths!="save"){
             fetchurl = '/testing/updatetestplanstatus?location='+this.state.locationvalue+'&project='+this.state.projectvalue+'&status=Draft';
-            fetchApi(fetchurl,JSON.stringify({status:'ReviewPending'}));
+            fetchApi(fetchurl,JSON.stringify({status:'ReviewPending'})).then(() => {
+                alert("Test Plan Submitted Successfully")
+                getPreviewData(this.state.locationvalue,this.state.projectvalue,this.state.projectDetails,this.state.typeoftest);
 
-            alert("Test Plan Submitted Successfully")
-           getPreviewData(this.state.locationvalue,this.state.projectvalue,this.state.projectDetails,this.state.typeoftest);
+            });
+
+           
          } else {
             alert("Test Plan Saved Successfully")
          }
@@ -532,14 +536,8 @@ constructor(props){
         let fetchurl = '/testing/getCommunicationtestplanning?location='+locationvalue+'&project='+projectvalue+'&status=Draft'+'&typeoftest='+typeoftest+'&projectDetails='+projectDetails;
     
         fetch(fetchurl).then(res => res.json()).then(data =>{
-                if(projectDetails===""){
                     this.setState({prviewData:data,preview:true});       
-                }  else {
-                    this.setState({prviewData:data.filter((obj) =>{
-                        return obj.projectDetails == projectDetails
-                    } ),preview:true});       
-                }
-                                            
+                               
             });
     }
 
@@ -608,12 +606,14 @@ constructor(props){
                                         employeeData:selctedgridData.map((ths,i)=>{
                                             return {id:ths.id,username:ths.username,primaryNumber:ths.primaryNumber};
                                         })
-                                        ,status:"Draft"
+                                        ,status:"Draft",
+                                        createdDate:formatAMPM(new Date())
                                     }
 
                                     this.setState({
                                         planstartdateValue:planstartDate,
                                         planenddateValue:planEndDate,
+                                        projectDetails:json.projectDetails
                                     })
                                     this.getplanComments(this.state.locationvalue,this.state.projectvalue,this.state.typeoftest,json.projectDetails);
 
@@ -621,12 +621,17 @@ constructor(props){
 
                                         if(json.employeeData.length>0){
 
-                                            fetchApi(fetchurl,JSON.stringify(json));
+                                            fetchApi(fetchurl,JSON.stringify(json)).then((data) => {
+                                                alert("Added Successfully");
+                                                getPreviewData(this.state.locationvalue,this.state.projectvalue,json.projectDetails,this.state.typeoftest);
+                                               
+
+                                            });
                                         }
-                                        getPreviewData(this.state.locationvalue,this.state.projectvalue,json.projectDetails,this.state.typeoftest);
-                                }
+                                } 
+                                this.setState({ modalShow: false });
                                
-                         this.setState({ modalShow: false });
+                         
             };
 
         var table = {};
