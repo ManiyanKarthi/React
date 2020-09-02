@@ -24,7 +24,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.24.1",
     "babel-runtime": "^6.23.0",
-    "bestzip": "^1.1.4",
+    "bestzip": "^2.1.7",
     "body-parser": "^1.18.3",
     "bootstrap": "^4.2.1",
     "bootstrap-loader": "^3.0.2",
